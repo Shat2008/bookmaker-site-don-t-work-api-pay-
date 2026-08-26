@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация - VIP BET{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+    
+    .register-card {
+        background: linear-gradient(135deg, 
+            rgba(26, 26, 46, 0.95) 0%, 
+            rgba(40, 40, 70, 0.95) 100%);
+        border: 3px solid;
+        border-image: linear-gradient(45deg, #D4AF37, #B8860B, #D4AF37) 1;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, 
+            #D4AF37 0%, 
+            #B8860B 25%, 
+            #DAA520 50%, 
+            #B8860B 75%, 
+            #D4AF37 100%);
+        animation: gradientMove 3s linear infinite;
+    }
+    
+    @keyframes gradientMove {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 200% 0%; }
+    }
+    
+    .register-header {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        text-align: center;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .register-body {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        color: #f0e6d2;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .form-control {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: #f0e6d2;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: #D4AF37;
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        color: #fff;
+    }
+    
+    .form-control::placeholder {
+        color: rgba(240, 230, 210, 0.5);
+    }
+    
+    .password-requirements {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 10px;
+    }
+    
+    .requirements-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9em;
+    }
+    
+    .requirements-list li {
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .requirements-list li i {
+        margin-right: 8px;
+        font-size: 0.8em;
+    }
+    
+    .requirements-list li.valid {
+        color: #28a745;
+    }
+    
+    .requirements-list li.invalid {
+        color: #dc3545;
+    }
+    
+    .register-footer {
+        padding: 1.5rem 2rem;
+        text-align: center;
+        border-top: 1px solid rgba(212, 175, 55, 0.2);
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-register {
+        background: linear-gradient(45deg, #D4AF37, #B8860B);
+        color: #000;
+        font-weight: bold;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 1.1em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        width: 100%;
+    }
+    
+    .btn-register:hover {
+        background: linear-gradient(45deg, #B8860B, #D4AF37);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+    }
+    
+    .btn-register:active {
+        transform: translateY(0);
+    }
+    
+    .login-link {
+        color: #D4AF37;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .login-link:hover {
+        color: #FFD700;
+        text-decoration: underline;
+    }
+    
+    .bonus-badge {
+        background: linear-gradient(45deg, #D4AF37, #FFD700);
+        color: #000;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+        display: inline-block;
+        margin-left: 10px;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9em;
+        margin-top: 5px;
+        display: none;
+    }
+    
+    .error-message.show {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h1 class="gold-text mb-2">
+                <i class="fas fa-gem me-2"></i>Регистрация
+                <span class="bonus-badge">+100% БОНУС</span>
+            </h1>
+            <p class="text-light mb-0">Создайте аккаунт и получите бонус на первый депозит!</p>
+        </div>
+        
+        <div class="register-body">
+            <form method="post" id="registerForm">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Пожалуйста, исправьте ошибки в форме.
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <!-- Логин -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="id_username">
+                                <i class="fas fa-user me-1"></i>Имя пользователя*
+                            </label>
+                            <input type="text" name="username" id="id_username" 
+                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                   value="{{ form.username.value|default:'' }}"
+                                   placeholder="Введите имя пользователя"
+                                   required>
+                            {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="id_email">
+                                <i class="fas fa-envelope me-1"></i>Email*
+                            </label>
+                            <input type="email" name="email" id="id_email" 
+                                   class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                   value="{{ form.email.value|default:'' }}"
+                                   placeholder="example@mail.com"
+                                   required>
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.email.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Телефон -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="id_phone">
+                                <i class="fas fa-phone me-1"></i>Телефон
+                            </label>
+                            <input type="tel" name="phone" id="id_phone" 
+                                   class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                                   value="{{ form.phone.value|default:'' }}"
+                                   placeholder="+7 (999) 999-99-99">
+                            {% if form.phone.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.phone.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Дата рождения -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="id_birth_date">
+                                <i class="fas fa-birthday-cake me-1"></i>Дата рождения
+                            </label>
+                            <input type="date" name="birth_date" id="id_birth_date" 
+                                   class="form-control {% if form.birth_date.errors %}is-invalid{% endif %}"
+                                   value="{{ form.birth_date.value|default:'' }}">
+                            {% if form.birth_date.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.birth_date.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Пароль -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="id_password1">
+                                <i class="fas fa-lock me-1"></i>Пароль*
+                            </label>
+                            <input type="password" name="password1" id="id_password1" 
+                                   class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                   placeholder="Введите пароль"
+                                   required>
+                            {% if form.password1.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password1.errors.0 }}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="password-requirements mt-2">
+                                <small class="text-warning mb-2 d-block">
+                                    <i class="fas fa-info-circle me-1"></i>Требования к паролю:
+                                </small>
+                                <ul class="requirements-list" id="passwordRequirements">
+                                    <li id="reqLength" class="invalid">
+                                        <i class="fas fa-times-circle"></i>Минимум 8 символов
+                                    </li>
+                                    <li id="reqUpper" class="invalid">
+                                        <i class="fas fa-times-circle"></i>Хотя бы одна заглавная буква
+                                    </li>
+                                    <li id="reqLower" class="invalid">
+                                        <i class="fas fa-times-circle"></i>Хотя бы одна строчная буква
+                                    </li>
+                                    <li id="reqNumber" class="invalid">
+                                        <i class="fas fa-times-circle"></i>Хотя бы одна цифра
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Подтверждение пароля -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="id_password2">
+                                <i class="fas fa-lock me-1"></i>Подтверждение пароля*
+                            </label>
+                            <input type="password" name="password2" id="id_password2" 
+                                   class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                   placeholder="Повторите пароль"
+                                   required>
+                            {% if form.password2.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password2.errors.0 }}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mt-2" id="passwordMatch">
+                                <small class="text-muted">
+                                    <i class="fas fa-sync-alt me-1"></i>Пароли должны совпадать
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Соглашения -->
+                <div class="form-group mt-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" 
+                               name="terms" id="id_terms" required>
+                        <label class="form-check-label text-light" for="id_terms">
+                            Я подтверждаю, что мне исполнилось 18 лет и я согласен с 
+                            <a href="{% url 'core:rules' %}" class="gold-text" target="_blank">правилами</a> и 
+<a href="{% url 'core:rules' %}" class="gold-text" target="_blank">условиями</a>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" 
+                               name="newsletter" id="id_newsletter" checked>
+                        <label class="form-check-label text-light" for="id_newsletter">
+                            Я хочу получать уведомления о бонусах и специальных предложениях
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Кнопка регистрации -->
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn-register" id="submitBtn">
+                        <i class="fas fa-user-plus me-2"></i>Создать аккаунт
+                    </button>
+                </div>
+                
+                <!-- Социальные сети -->
+                <div class="text-center mt-4">
+                    <p class="text-light mb-2">Или зарегистрируйтесь через</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-outline-light">
+                            <i class="fab fa-google"></i> Google
+                        </button>
+                        <button type="button" class="btn btn-outline-light">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </button>
+                        <button type="button" class="btn btn-outline-light">
+                            <i class="fab fa-telegram"></i> Telegram
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="register-footer">
+            <p class="mb-0 text-light">
+                Уже есть аккаунт? 
+                <a href="{% url 'users:login' %}" class="login-link">
+                    <i class="fas fa-sign-in-alt me-1"></i>Войти
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    const requirements = document.getElementById('passwordRequirements');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('registerForm');
+    
+    // Валидация пароля
+    function validatePassword(password) {
+        const checks = {
+            length: password.length >= 8,
+            upper: /[A-Z]/.test(password),
+            lower: /[a-z]/.test(password),
+            number: /\d/.test(password)
+        };
+        
+        // Обновление иконок требований
+        document.getElementById('reqLength').className = checks.length ? 'valid' : 'invalid';
+        document.getElementById('reqUpper').className = checks.upper ? 'valid' : 'invalid';
+        document.getElementById('reqLower').className = checks.lower ? 'valid' : 'invalid';
+        document.getElementById('reqNumber').className = checks.number ? 'valid' : 'invalid';
+        
+        // Обновление иконок
+        document.querySelectorAll('#reqLength i').forEach(icon => {
+            icon.className = checks.length ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        });
+        document.querySelectorAll('#reqUpper i').forEach(icon => {
+            icon.className = checks.upper ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        });
+        document.querySelectorAll('#reqLower i').forEach(icon => {
+            icon.className = checks.lower ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        });
+        document.querySelectorAll('#reqNumber i').forEach(icon => {
+            icon.className = checks.number ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        });
+        
+        return Object.values(checks).every(check => check);
+    }
+    
+    // Проверка совпадения паролей
+    function checkPasswordMatch() {
+        if (password1.value && password2.value) {
+            if (password1.value === password2.value) {
+                passwordMatch.innerHTML = `
+                    <small class="text-success">
+                        <i class="fas fa-check-circle me-1"></i>Пароли совпадают
+                    </small>
+                `;
+                return true;
+            } else {
+                passwordMatch.innerHTML = `
+                    <small class="text-danger">
+                        <i class="fas fa-times-circle me-1"></i>Пароли не совпадают
+                    </small>
+                `;
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    // Общая проверка формы
+    function validateForm() {
+        const isPasswordValid = validatePassword(password1.value);
+        const isPasswordMatch = checkPasswordMatch();
+        const isTermsAccepted = document.getElementById('id_terms').checked;
+        
+        // Включение/отключение кнопки отправки
+        submitBtn.disabled = !(isPasswordValid && isPasswordMatch && isTermsAccepted);
+        
+        if (submitBtn.disabled) {
+            submitBtn.style.opacity = '0.6';
+            submitBtn.style.cursor = 'not-allowed';
+        } else {
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+        }
+    }
+    
+    // Слушатели событий
+    password1.addEventListener('input', validateForm);
+    password2.addEventListener('input', validateForm);
+    document.getElementById('id_terms').addEventListener('change', validateForm);
+    
+    // Инициализация валидации
+    validateForm();
+    
+    // Маска для телефона
+    const phoneInput = document.getElementById('id_phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            e.target.value = !x[2] ? x[1] : '+7 (' + x[2] + ') ' + x[3] + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+        });
+    }
+    
+    // Проверка возраста по дате рождения
+    const birthDateInput = document.getElementById('id_birth_date');
+    if (birthDateInput) {
+        birthDateInput.addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            if (age < 18) {
+                alert('Для регистрации вам должно быть не менее 18 лет');
+                this.value = '';
+            }
+        });
+    }
+    
+    // Анимация при отправке формы
+    form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Регистрация...';
+        
+        // В реальном проекте здесь будет AJAX отправка
+        // Для демонстрации оставляем обычную отправку формы
+    });
+    
+    // Подсказки при фокусе
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+    
+    // Генерация случайного логина
+    const usernameInput = document.getElementById('id_username');
+    const generateUsernameBtn = document.createElement('button');
+    generateUsernameBtn.type = 'button';
+    generateUsernameBtn.className = 'btn btn-sm btn-outline-warning mt-1';
+    generateUsernameBtn.innerHTML = '<i class="fas fa-dice me-1"></i>Сгенерировать логин';
+    generateUsernameBtn.addEventListener('click', function() {
+        const adjectives = ['Быстрый', 'Удачный', 'Счастливый', 'Золотой', 'Великий', 'Смелый'];
+        const nouns = ['Тигр', 'Орел', 'Волк', 'Дракон', 'Феникс', 'Единорог'];
+        const numbers = Math.floor(Math.random() * 1000);
+        
+        const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+        const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+        
+        usernameInput.value = `${randomAdj}${randomNoun}${numbers}`;
+        validateForm();
+    });
+    
+    usernameInput.parentElement.appendChild(generateUsernameBtn);
+});
+</script>
+{% endblock %}

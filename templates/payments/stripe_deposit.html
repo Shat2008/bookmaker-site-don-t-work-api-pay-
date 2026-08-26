@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">💳 {{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Введите сумму для пополнения счета</p>
+                    
+                    <form method="POST" id="deposit-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_amount" class="form-label">Сумма (USD)</label>
+                            {{ form.amount }}
+                            {% if form.amount.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Далее к оплате</button>
+                    </form>
+                    
+                    <a href="{% url 'payments:deposit' %}" class="btn btn-secondary w-100 mt-2">Назад</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

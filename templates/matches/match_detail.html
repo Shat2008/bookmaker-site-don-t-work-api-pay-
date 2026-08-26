@@ -1,0 +1,513 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ match.team1 }} vs {{ match.team2 }} - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <!-- Кнопка назад -->
+            <div class="mb-3">
+                <a href="{% url 'matches:match_list_by_sport' match.sport.id %}" 
+                   class="btn btn-outline-gold btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Назад к матчам
+                </a>
+            </div>
+            
+            <!-- Основная карточка матча -->
+            <div class="luxury-card p-5 mb-4">
+                <!-- Заголовок -->
+                <div class="text-center mb-5 pb-4" style="border-bottom: 2px solid rgba(212, 175, 55, 0.3);">
+                    <h1 class="gold-text mb-3" style="font-size: 2.5rem; letter-spacing: 2px;">
+                        <i class="fas fa-{{ match.sport.icon }} me-3"></i>{{ match.league }}
+                    </h1>
+                    <p class="text-light fs-5 mb-1">{{ match.start_time|date:"d.m.Y • H:i" }}</p>
+                    {% if match.status == 'live' %}
+                    <span class="badge bg-danger fs-6">
+                        <i class="fas fa-circle blink" style="animation: blink 1s infinite;"></i> LIVE
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Основной матч -->
+                <div class="row align-items-center mb-5">
+                    <!-- Первая команда -->
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            {% if match.team1_logo %}
+                            <img src="{{ match.team1_logo }}" alt="{{ match.team1 }}" class="team-logo img-fluid mb-3" loading="lazy">
+                            {% else %}
+                            <i class="fas fa-shield-alt team-logo-placeholder mb-3"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Коэффициент первой команды -->
+                        <div class="coefficient-box mb-3" style="font-size: 2.5rem; padding: 30px 20px;">
+                            {{ match.coefficient_team1 }}
+                        </div>
+                        
+                        <h2 class="text-light" style="font-size: 1.8rem;">{{ match.team1 }}</h2>
+                    </div>
+                    
+                    <!-- Разделитель VS -->
+                    <div class="col-md-2 text-center" style="border-left: 2px solid rgba(212, 175, 55, 0.3); border-right: 2px solid rgba(212, 175, 55, 0.3);">
+                        <h3 class="gold-text" style="font-size: 2.5rem; margin: 0;">VS</h3>
+                    </div>
+                    
+                    <!-- Вторая команда -->
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            {% if match.team2_logo %}
+                            <img src="{{ match.team2_logo }}" alt="{{ match.team2 }}" class="team-logo img-fluid mb-3" loading="lazy">
+                            {% else %}
+                            <i class="fas fa-shield-alt team-logo-placeholder mb-3"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Коэффициент второй команды -->
+                        <div class="coefficient-box mb-3" style="font-size: 2.5rem; padding: 30px 20px;">
+                            {{ match.coefficient_team2 }}
+                        </div>
+                        
+                        <h2 class="text-light" style="font-size: 1.8rem;">{{ match.team2 }}</h2>
+                    </div>
+                </div>
+                
+                <!-- Дополнительные коэффициенты -->
+                <div class="row g-3 mb-4">
+                    {% if match.coefficient_draw %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="coefficient-card text-center">
+                            <div class="coefficient-box">{{ match.coefficient_draw }}</div>
+                            <small class="text-light">Ничья</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if match.total_over %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="coefficient-card text-center">
+                            <div class="coefficient-box">{{ match.total_over }}</div>
+                            <small class="text-light">Тотал больше</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if match.total_under %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="coefficient-card text-center">
+                            <div class="coefficient-box">{{ match.total_under }}</div>
+                            <small class="text-light">Тотал меньше</small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Форма ставки -->
+            {% if user.is_authenticated and match.is_active and match.status == 'upcoming' %}
+            <div class="luxury-card p-4">
+                <h3 class="gold-text mb-4">
+                    <i class="fas fa-bolt me-2"></i>Сделать ставку
+                </h3>
+                
+                <form method="post" id="betForm">
+                    {% csrf_token %}
+                    
+                    <!-- Выбор типа ставки -->
+                    <div class="mb-4">
+                        <label class="form-label text-light mb-3">Выберите тип ставки:</label>
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <div class="bet-type-option text-center p-3" 
+                                     data-type="team1" 
+                                     data-coefficient="{{ match.coefficient_team1 }}">
+                                    <div class="fw-bold">{{ match.team1 }}</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.coefficient_team1 }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if match.coefficient_draw %}
+                            <div class="col-4">
+                                <div class="bet-type-option text-center p-3"
+                                     data-type="draw"
+                                     data-coefficient="{{ match.coefficient_draw }}">
+                                    <div class="fw-bold">Ничья</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.coefficient_draw }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="col-4">
+                                <div class="bet-type-option text-center p-3"
+                                     data-type="team2"
+                                     data-coefficient="{{ match.coefficient_team2 }}">
+                                    <div class="fw-bold">{{ match.team2 }}</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.coefficient_team2 }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if match.total_over and match.total_under %}
+                        <div class="row g-3 mt-3">
+                            <div class="col-6">
+                                <div class="bet-type-option text-center p-3"
+                                     data-type="total_over"
+                                     data-coefficient="{{ match.total_over }}">
+                                    <div class="fw-bold">Тотал больше</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.total_over }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bet-type-option text-center p-3"
+                                     data-type="total_under"
+                                     data-coefficient="{{ match.total_under }}">
+                                    <div class="fw-bold">Тотал меньше</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.total_under }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Сумма ставки -->
+                    <div class="mb-4">
+                        <label class="form-label text-light">Сумма ставки (₽)</label>
+                        <input type="number" 
+                               class="form-control" 
+                               id="betAmount" 
+                               name="amount" 
+                               min="10" 
+                               max="100000" 
+                               step="10"
+                               value="100"
+                               required>
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">Минимум: 10 ₽</small>
+                            <small class="text-muted">Максимум: 100,000 ₽</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Потенциальный выигрыш -->
+                    <div class="mb-4 p-3" style="background: rgba(212, 175, 55, 0.1); border-radius: 10px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-light">Потенциальный выигрыш:</div>
+                                <div class="fs-4 gold-text fw-bold" id="potentialWin">0 ₽</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-light">Ваш баланс:</div>
+                                <div class="fs-4 text-success fw-bold">{{ user.balance|default:"0.00" }} ₽</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Скрытые поля -->
+                    <input type="hidden" id="betType" name="bet_type" value="">
+                    <input type="hidden" id="coefficient" name="coefficient" value="">
+                    
+                    <!-- Кнопка -->
+                    <button type="submit" class="btn btn-gold w-100 py-3 fs-5" id="submitBetBtn" disabled>
+                        <i class="fas fa-bolt me-2"></i>Сделать ставку
+                    </button>
+                </form>
+            </div>
+            {% elif not user.is_authenticated %}
+            <div class="luxury-card p-4 text-center">
+                <h4 class="gold-text mb-3">Войдите, чтобы сделать ставку</h4>
+                <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn btn-gold">
+                    <i class="fas fa-sign-in-alt me-2"></i>Войти
+                </a>
+            </div>
+            {% elif match.status != 'upcoming' %}
+            <div class="luxury-card p-4 text-center">
+                <h4 class="gold-text mb-3">Ставки на этот матч закрыты</h4>
+                <p class="text-light">Матч уже начался или завершен</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Боковая панель -->
+        <div class="col-lg-4">
+            <!-- Информация о матче -->
+            <div class="luxury-card p-4 mb-4">
+                <h4 class="gold-text mb-3">
+                    <i class="fas fa-info-circle me-2"></i>Информация
+                </h4>
+                <ul class="list-unstyled text-light">
+                    <li class="mb-2">
+                        <i class="fas fa-trophy me-2 text-warning"></i>
+                        <strong>Лига:</strong> {{ match.league }}
+                    </li>
+                    {% if match.country %}
+                    <li class="mb-2">
+                        <i class="fas fa-flag me-2 text-warning"></i>
+                        <strong>Страна:</strong> {{ match.country }}
+                    </li>
+                    {% endif %}
+                    <li class="mb-2">
+                        <i class="fas fa-clock me-2 text-warning"></i>
+                        <strong>Начало:</strong> {{ match.start_time|date:"d.m.Y H:i" }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-calendar me-2 text-warning"></i>
+                        <strong>Статус:</strong> 
+                        {% if match.status == 'upcoming' %}
+                        <span class="text-success">Предстоящий</span>
+                        {% elif match.status == 'live' %}
+                        <span class="text-danger">В прямом эфире</span>
+                        {% else %}
+                        <span class="text-muted">{{ match.get_status_display }}</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Быстрые ставки -->
+            {% if user.is_authenticated %}
+            <div class="luxury-card p-4">
+                <h4 class="gold-text mb-3">
+                    <i class="fas fa-bolt me-2"></i>Быстрые ставки
+                </h4>
+                <p class="text-light mb-3">Выберите сумму:</p>
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <button class="btn btn-outline-gold w-100 quick-amount" data-amount="100">
+                            100 ₽
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-outline-gold w-100 quick-amount" data-amount="500">
+                            500 ₽
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-outline-gold w-100 quick-amount" data-amount="1000">
+                            1000 ₽
+                        </button>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button class="btn btn-outline-warning w-100" id="doubleAmount">
+                            <i class="fas fa-times me-1"></i>Удвоить
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-danger w-100" id="clearAmount">
+                            <i class="fas fa-times me-1"></i>Очистить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Коэффициенты */
+    .coefficient-box {
+        background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+        color: #000;
+        padding: 25px 20px;
+        border-radius: 15px;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 90px;
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+    }
+    
+    .coefficient-box:hover {
+        transform: scale(1.08) translateY(-5px);
+        box-shadow: 0 12px 35px rgba(212, 175, 55, 0.5);
+    }
+    
+    .coefficient-card {
+        padding: 20px;
+        background: rgba(212, 175, 55, 0.05);
+        border: 2px solid rgba(212, 175, 55, 0.2);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .coefficient-card:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+    
+    .coefficient-lg {
+        background: linear-gradient(45deg, #D4AF37, #B8860B);
+        color: #000;
+        padding: 15px 30px;
+        border-radius: 15px;
+        font-size: 1.5em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        min-width: 100px;
+        display: inline-block;
+    }
+    
+    .coefficient-lg:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+    
+    .bet-type-option {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid transparent;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .bet-type-option:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    .bet-type-option.selected {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: #D4AF37;
+    }
+    
+    .coefficient-badge {
+        background: linear-gradient(45deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.1));
+        color: #D4AF37;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+    @keyframes blink {
+        0%, 50% {
+            opacity: 1;
+        }
+        51%, 100% {
+            opacity: 0.3;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const betAmount = document.getElementById('betAmount');
+    const potentialWin = document.getElementById('potentialWin');
+    const submitBtn = document.getElementById('submitBetBtn');
+    const betTypeInput = document.getElementById('betType');
+    const coefficientInput = document.getElementById('coefficient');
+    
+    let selectedCoefficient = 0;
+    let selectedType = '';
+    
+    // Выбор типа ставки
+    document.querySelectorAll('.bet-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Снимаем выделение со всех
+            document.querySelectorAll('.bet-type-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Выделяем выбранный
+            this.classList.add('selected');
+            
+            // Сохраняем выбранные значения
+            selectedType = this.dataset.type;
+            selectedCoefficient = parseFloat(this.dataset.coefficient);
+            
+            // Заполняем скрытые поля
+            betTypeInput.value = selectedType;
+            coefficientInput.value = selectedCoefficient;
+            
+            // Включаем кнопку если сумма указана
+            updateSubmitButton();
+            updatePotentialWin();
+        });
+    });
+    
+    // Обновление потенциального выигрыша
+    function updatePotentialWin() {
+        if (selectedCoefficient > 0 && betAmount.value) {
+            const amount = parseFloat(betAmount.value);
+            const win = (amount * selectedCoefficient).toFixed(2);
+            potentialWin.textContent = win + ' ₽';
+        } else {
+            potentialWin.textContent = '0 ₽';
+        }
+    }
+    
+    // Обновление состояния кнопки
+    function updateSubmitButton() {
+        const amount = parseFloat(betAmount.value) || 0;
+        const userBalance = parseFloat('{{ user.balance|default:"0" }}');
+        
+        if (selectedCoefficient > 0 && amount >= 10 && amount <= 100000 && amount <= userBalance) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-bolt me-2"></i>Сделать ставку';
+        } else {
+            submitBtn.disabled = true;
+            
+            if (amount > userBalance) {
+                submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Недостаточно средств';
+            } else if (!selectedCoefficient) {
+                submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Выберите тип ставки';
+            } else {
+                submitBtn.innerHTML = '<i class="fas fa-bolt me-2"></i>Сделать ставку';
+            }
+        }
+    }
+    
+    // Слушатели событий
+    betAmount.addEventListener('input', function() {
+        updatePotentialWin();
+        updateSubmitButton();
+    });
+    
+    // Быстрые суммы
+    document.querySelectorAll('.quick-amount').forEach(btn => {
+        btn.addEventListener('click', function() {
+            betAmount.value = this.dataset.amount;
+            updatePotentialWin();
+            updateSubmitButton();
+        });
+    });
+    
+    // Удвоить сумму
+    document.getElementById('doubleAmount').addEventListener('click', function() {
+        const current = parseFloat(betAmount.value) || 0;
+        betAmount.value = current * 2;
+        updatePotentialWin();
+        updateSubmitButton();
+    });
+    
+    // Очистить сумму
+    document.getElementById('clearAmount').addEventListener('click', function() {
+        betAmount.value = '';
+        updatePotentialWin();
+        updateSubmitButton();
+    });
+    
+    // Инициализация
+    updateSubmitButton();
+});
+</script>
+{% endblock %}

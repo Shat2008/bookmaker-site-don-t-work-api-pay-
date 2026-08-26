@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Платеж Stripe - VIP BET{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .StripeElement {
+        box-sizing: border-box;
+        height: 40px;
+        padding: 10px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: white;
+        box-shadow: 0 1px 3px 0 #e6ebf1;
+        -webkit-transition: box-shadow 150ms ease;
+        transition: box-shadow 150ms ease;
+    }
+    
+    .StripeElement--focus {
+        box-shadow: 0 1px 3px 0 #cfd7df;
+        border-color: #80bdff;
+    }
+    
+    .StripeElement--invalid {
+        border-color: #fa755a;
+    }
+    
+    #card-errors {
+        color: #fa755a;
+        margin-top: 10px;
+    }
+    
+    .loading {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">🔒 Безопасный платеж Stripe</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <p class="h5">Сумма к оплате: <strong>${ amount }}</strong></p>
+                        <p class="text-muted">Transaction ID: {{ transaction_id }}</p>
+                    </div>
+                    
+                    <form id="payment-form" class="payment-form">
+                        <div class="mb-3">
+                            <label for="card-element" class="form-label">Карта</label>
+                            <div id="card-element"></div>
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+                        
+                        <button id="submit-button" type="submit" class="btn btn-success w-100">
+                            Оплатить ${{ amount }}
+                        </button>
+                        
+                        <div id="payment-message" class="alert alert-info mt-3" style="display:none;"></div>
+                        
+                        <div class="loading mt-3">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Обработка платежа...</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация Stripe
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+    
+    // Обработка ошибок ввода карты
+    cardElement.on('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+    
+    // Обработка отправки формы
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const submitButton = document.getElementById('submit-button');
+        const loading = document.querySelector('.loading');
+        const clientSecret = '{{ client_secret }}';
+        const paymentMessage = document.getElementById('payment-message');
+        
+        submitButton.disabled = true;
+        loading.style.display = 'block';
+        
+        // Подтвердить платеж через Stripe
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name: '{{ request.user.get_full_name|default:request.user.username }}'
+                }
+            }
+        });
+        
+        if (error) {
+            // Показать ошибку
+            paymentMessage.textContent = error.message;
+            paymentMessage.style.display = 'block';
+            paymentMessage.className = 'alert alert-danger';
+            submitButton.disabled = false;
+            loading.style.display = 'none';
+        } else if (paymentIntent.status === 'succeeded') {
+            // Платеж успешен
+            paymentMessage.textContent = 'Платеж успешно обработан!';
+            paymentMessage.style.display = 'block';
+            paymentMessage.className = 'alert alert-success';
+            
+            // Подтвердить платеж на сервере
+            fetch('{% url "payments:stripe_payment_confirm" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    payment_intent_id: paymentIntent.id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    setTimeout(() => {
+                        window.location.href = '{% url "payments:payment_success" %}?payment_id=' + paymentIntent.id;
+                    }, 1500);
+                } else {
+                    paymentMessage.textContent = 'Ошибка при подтверждении платежа';
+                    paymentMessage.className = 'alert alert-danger';
+                    submitButton.disabled = false;
+                    loading.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                paymentMessage.textContent = 'Ошибка сервера';
+                paymentMessage.className = 'alert alert-danger';
+                submitButton.disabled = false;
+                loading.style.display = 'none';
+            });
+        } else {
+            // Платеж требует дополнительных действий
+            paymentMessage.textContent = 'Требуется дополнительная аутентификация';
+            paymentMessage.style.display = 'block';
+            paymentMessage.className = 'alert alert-warning';
+            submitButton.disabled = false;
+            loading.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

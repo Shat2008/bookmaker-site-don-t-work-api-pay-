@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+
+{% block title %}Вывод средств - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Заголовок -->
+            <div class="luxury-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="gold-text mb-2">
+                            <i class="fas fa-money-bill-wave me-2"></i>Вывод средств
+                        </h1>
+                        <p class="text-light mb-0">Заявка на вывод средств с вашего счета</p>
+                    </div>
+                    <div class="balance-display">
+                        <span class="me-2">Доступно:</span>
+                        <span class="gold-text fw-bold fs-5">{{ user.balance|default:"0.00" }} ₽</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Форма вывода -->
+            <div class="luxury-card p-4">
+                <form method="post" id="withdrawForm">
+                    {% csrf_token %}
+                    
+                    <!-- Сумма -->
+                    <div class="mb-4">
+                        <label class="form-label text-light mb-3">Сумма вывода (₽)</label>
+                        <div class="input-group input-group-lg">
+                            <input type="number" 
+                                   name="amount" 
+                                   id="amountInput"
+                                   class="form-control" 
+                                   value="1000"
+                                   min="{{ min_withdrawal }}"
+                                   max="{{ max_withdrawal }}"
+                                   step="10"
+                                   required>
+                            <span class="input-group-text bg-warning text-dark fw-bold">₽</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted">Мин: {{ min_withdrawal }} ₽</small>
+                            <small class="text-muted">Макс: {{ max_withdrawal }} ₽</small>
+                        </div>
+                        
+                        <!-- Быстрые суммы -->
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button type="button" class="btn btn-outline-gold quick-amount" data-amount="500">
+                                500 ₽
+                            </button>
+                            <button type="button" class="btn btn-outline-gold quick-amount" data-amount="1000">
+                                1,000 ₽
+                            </button>
+                            <button type="button" class="btn btn-outline-gold quick-amount" data-amount="5000">
+                                5,000 ₽
+                            </button>
+                            <button type="button" class="btn btn-outline-gold quick-amount" data-amount="10000">
+                                10,000 ₽
+                            </button>
+                            <button type="button" class="btn btn-outline-gold" id="withdrawAll">
+                                Все средства
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Способ вывода -->
+                    <div class="mb-4">
+                        <label class="form-label text-light mb-3">Способ вывода</label>
+                        <div class="row g-3">
+                            <!-- Банковская карта -->
+                            <div class="col-md-4">
+                                <div class="withdraw-method text-center p-3 selected" data-method="card">
+                                    <div class="mb-2">
+                                        <i class="fas fa-credit-card fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="fw-bold">На карту</div>
+                                    <small class="text-muted">1-3 рабочих дня</small>
+                                </div>
+                            </div>
+                            
+                            <!-- QIWI -->
+                            <div class="col-md-4">
+                                <div class="withdraw-method text-center p-3" data-method="qiwi">
+                                    <div class="mb-2">
+                                        <i class="fas fa-mobile-alt fa-2x text-warning"></i>
+                                    </div>
+                                    <div class="fw-bold">На QIWI</div>
+                                    <small class="text-muted">До 24 часов</small>
+                                </div>
+                            </div>
+                            
+                            <!-- ЮMoney -->
+                            <div class="col-md-4">
+                                <div class="withdraw-method text-center p-3" data-method="yoomoney">
+                                    <div class="mb-2">
+                                        <i class="fas fa-gem fa-2x text-danger"></i>
+                                    </div>
+                                    <div class="fw-bold">На ЮMoney</div>
+                                    <small class="text-muted">До 24 часов</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Скрытое поле для способа вывода -->
+                        <input type="hidden" name="payment_method" id="paymentMethod" value="card">
+                    </div>
+                    
+                    <!-- Дополнительные поля -->
+                    <div id="additionalFields">
+                        <!-- Поля для карты -->
+                        <div class="withdraw-fields card-fields">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label text-light">Номер карты</label>
+                                    <input type="text" 
+                                           name="card_number"
+                                           class="form-control card-input"
+                                           placeholder="0000 0000 0000 0000"
+                                           maxlength="19"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Поля для QIWI -->
+                        <div class="withdraw-fields qiwi-fields" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label text-light">Номер телефона QIWI</label>
+                                <input type="tel" 
+                                       name="phone"
+                                       class="form-control"
+                                       placeholder="+7 (999) 999-99-99">
+                            </div>
+                        </div>
+                        
+                        <!-- Поля для ЮMoney -->
+                        <div class="withdraw-fields yoomoney-fields" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label text-light">Номер кошелька</label>
+                                <input type="text" 
+                                       name="wallet"
+                                       class="form-control"
+                                       placeholder="4100XXXXXXXXXX">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Информация о выводе -->
+                    <div class="mb-4 p-4" style="background: rgba(40, 167, 69, 0.1); border-radius: 10px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="text-light mb-2">Сумма к получению:</div>
+                                <div class="fs-3 fw-bold text-success" id="amountDisplay">1,000 ₽</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-light mb-2">Комиссия:</div>
+                                <div class="fs-4 fw-bold text-warning" id="feeDisplay">50 ₽</div>
+                                <small class="text-muted">5% от суммы</small>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-top border-secondary">
+                            <div class="text-light mb-1">Будет списано с баланса:</div>
+                            <div class="fs-4 fw-bold text-danger" id="totalDisplay">1,050 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопка отправки -->
+                    <button type="submit" class="btn btn-gold w-100 py-3 fs-5 fw-bold">
+                        <i class="fas fa-paper-plane me-2"></i>Отправить заявку
+                    </button>
+                    
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Заявки обрабатываются в течение 24 часов в рабочие дни
+                        </small>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Информация -->
+            <div class="luxury-card p-4 mt-4">
+                <h5 class="gold-text mb-3">
+                    <i class="fas fa-info-circle me-2"></i>Важная информация
+                </h5>
+                <div class="text-light small">
+                    <p class="mb-2">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Минимальная сумма вывода: {{ min_withdrawal }} ₽
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Комиссия при выводе: 5% от суммы
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-clock text-warning me-2"></i>
+                        Обработка заявки: 1-3 рабочих дня
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-shield-alt text-warning me-2"></i>
+                        Вывод только на реквизиты, с которых производилось пополнение
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .withdraw-method {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid transparent;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .withdraw-method:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    .withdraw-method.selected {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: #D4AF37;
+        transform: translateY(-2px);
+    }
+    
+    .quick-amount.active {
+        background: #D4AF37;
+        color: #000;
+        border-color: #D4AF37;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const amountInput = document.getElementById('amountInput');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const feeDisplay = document.getElementById('feeDisplay');
+    const totalDisplay = document.getElementById('totalDisplay');
+    const paymentMethodInput = document.getElementById('paymentMethod');
+    const withdrawMethods = document.querySelectorAll('.withdraw-method');
+    const withdrawFields = document.querySelectorAll('.withdraw-fields');
+    const userBalance = parseFloat('{{ user.balance|default:"0" }}');
+    
+    // Комиссия 5%
+    const FEE_PERCENT = 5;
+    
+    // Обновление расчетов
+    function updateCalculations() {
+        const amount = parseInt(amountInput.value) || 0;
+        const fee = Math.ceil(amount * FEE_PERCENT / 100);
+        const total = amount + fee;
+        const received = amount;
+        
+        // Обновляем отображение
+        amountDisplay.textContent = received.toLocaleString('ru-RU') + ' ₽';
+        feeDisplay.textContent = fee.toLocaleString('ru-RU') + ' ₽';
+        totalDisplay.textContent = total.toLocaleString('ru-RU') + ' ₽';
+        
+        // Проверяем хватает ли средств
+        if (total > userBalance) {
+            amountInput.classList.add('is-invalid');
+            document.getElementById('submitBtn').disabled = true;
+        } else {
+            amountInput.classList.remove('is-invalid');
+            document.getElementById('submitBtn').disabled = false;
+        }
+    }
+    
+    // Выбор способа вывода
+    withdrawMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            // Снимаем выделение со всех
+            withdrawMethods.forEach(m => m.classList.remove('selected'));
+            
+            // Выделяем выбранный
+            this.classList.add('selected');
+            
+            // Сохраняем значение
+            const methodType = this.dataset.method;
+            paymentMethodInput.value = methodType;
+            
+            // Показываем соответствующие поля
+            withdrawFields.forEach(field => {
+                if (field.classList.contains(methodType + '-fields')) {
+                    field.style.display = 'block';
+                    // Делаем поля обязательными
+                    field.querySelectorAll('input').forEach(input => {
+                        input.required = true;
+                    });
+                } else {
+                    field.style.display = 'none';
+                    // Делаем поля необязательными
+                    field.querySelectorAll('input').forEach(input => {
+                        input.required = false;
+                    });
+                }
+            });
+        });
+    });
+    
+    // Быстрые суммы
+    document.querySelectorAll('.quick-amount').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Снимаем активный класс со всех
+            document.querySelectorAll('.quick-amount').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // Добавляем активный класс к выбранной
+            this.classList.add('active');
+            
+            // Устанавливаем сумму
+            amountInput.value = this.dataset.amount;
+            updateCalculations();
+        });
+    });
+    
+    // Вывод всех средств
+    document.getElementById('withdrawAll').addEventListener('click', function() {
+        // Максимальная сумма с учетом комиссии
+        const maxWithdrawal = Math.floor(userBalance / (1 + FEE_PERCENT / 100));
+        
+        // Устанавливаем максимально возможную сумму
+        amountInput.value = maxWithdrawal;
+        
+        // Помечаем как активную
+        document.querySelectorAll('.quick-amount').forEach(b => {
+            b.classList.remove('active');
+        });
+        this.classList.add('active');
+        
+        updateCalculations();
+    });
+    
+    // Маска для номера карты
+    const cardInput = document.querySelector('.card-input');
+    if (cardInput) {
+        cardInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = value.substring(0, 19);
+        });
+    }
+    
+    // Слушатель изменения суммы
+    amountInput.addEventListener('input', updateCalculations);
+    
+    // Инициализация
+    updateCalculations();
+    
+    // Выбираем первую быструю сумму
+    if (document.querySelectorAll('.quick-amount').length > 0) {
+        document.querySelectorAll('.quick-amount')[0].classList.add('active');
+    }
+    
+    // Подтверждение при отправке
+    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+        const amount = parseInt(amountInput.value) || 0;
+        const min = parseInt('{{ min_withdrawal }}') || 100;
+        const max = parseInt('{{ max_withdrawal }}') || 50000;
+        const fee = Math.ceil(amount * FEE_PERCENT / 100);
+        const total = amount + fee;
+        
+        if (amount < min) {
+            e.preventDefault();
+            alert('Минимальная сумма вывода: ' + min + ' ₽');
+            return;
+        }
+        
+        if (amount > max) {
+            e.preventDefault();
+            alert('Максимальная сумма вывода за раз: ' + max + ' ₽');
+            return;
+        }
+        
+        if (total > userBalance) {
+            e.preventDefault();
+            alert('Недостаточно средств с учетом комиссии');
+            return;
+        }
+        
+        if (!confirm(`Подтверждаете вывод ${amount} ₽?\nКомиссия: ${fee} ₽\nИтого к списанию: ${total} ₽`)) {
+            e.preventDefault();
+            return;
+        }
+    });
+});
+</script>
+{% endblock %}

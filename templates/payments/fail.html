@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Ошибка оплаты - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="luxury-card p-5 text-center">
+                <!-- Иконка ошибки -->
+                <div class="mb-4">
+                    <i class="fas fa-times-circle fa-5x text-danger"></i>
+                </div>
+                
+                <!-- Заголовок -->
+                <h1 class="gold-text mb-3">Оплата не прошла</h1>
+                <p class="text-light fs-5 mb-4">
+                    {% if error %}
+                    {{ error }}
+                    {% else %}
+                    Произошла ошибка при обработке платежа
+                    {% endif %}
+                </p>
+                
+                <!-- Действия -->
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <a href="{% url 'payments:deposit' %}" class="btn btn-gold">
+                        <i class="fas fa-redo me-2"></i>Попробовать снова
+                    </a>
+                    <a href="{% url 'core:support' %}" class="btn btn-outline-gold">
+                        <i class="fas fa-headset me-2"></i>Поддержка
+                    </a>
+                    <a href="{% url 'core:home' %}" class="btn btn-outline-gold">
+                        <i class="fas fa-home me-2"></i>На главную
+                    </a>
+                </div>
+                
+                <!-- Рекомендации -->
+                <div class="mt-5 pt-4 border-top border-secondary">
+                    <h5 class="gold-text mb-3">
+                        <i class="fas fa-lightbulb me-2"></i>Рекомендации
+                    </h5>
+                    <div class="text-light small text-start">
+                        <p class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Проверьте данные карты или кошелька
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Убедитесь, что на счете достаточно средств
+                        </p>
+                        <p class="mb-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Попробуйте другой способ оплаты
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

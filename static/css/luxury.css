@@ -1,0 +1,512 @@
+/* Роскошные стили для VIP дизайна */
+
+/* Фоны с градиентами */
+.bg-luxury {
+    background: linear-gradient(135deg, 
+        #0a0a0a 0%,
+        #1a0033 25%,
+        #33001a 50%,
+        #001a33 75%,
+        #0a0a0a 100%);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Бриллиантовый эффект */
+.diamond-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.diamond-effect::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(212, 175, 55, 0.1) 50%,
+        transparent 70%
+    );
+    animation: diamondShine 3s linear infinite;
+    transform: rotate(45deg);
+}
+
+@keyframes diamondShine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Шевронный узор */
+.chevron-pattern {
+    background-image: 
+        linear-gradient(45deg, rgba(212, 175, 55, 0.1) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(212, 175, 55, 0.1) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(212, 175, 55, 0.1) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(212, 175, 55, 0.1) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Золотой блеск */
+.gold-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.gold-shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        transparent 20%,
+        rgba(255, 215, 0, 0.2) 50%,
+        transparent 80%
+    );
+    animation: shimmer 2s infinite;
+    transform: rotate(30deg);
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(30deg); }
+    100% { transform: translateX(100%) rotate(30deg); }
+}
+
+/* VIP Badge */
+.vip-badge {
+    background: linear-gradient(45deg, #D4AF37, #FFD700, #D4AF37);
+    color: #000;
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.vip-badge::before {
+    content: 'VIP';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+    animation: vipGlow 2s infinite;
+}
+
+@keyframes vipGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Кристальные карты */
+.crystal-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.crystal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(212, 175, 55, 0.8),
+        transparent);
+}
+
+.crystal-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(212, 175, 55, 0.8),
+        transparent);
+}
+
+/* Бархатный фон */
+.velvet-bg {
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(106, 13, 173, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(220, 20, 60, 0.15) 0%, transparent 50%),
+        #0a0a0a;
+}
+
+/* Неоновые границы */
+.neon-border {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    position: relative;
+}
+
+.neon-border::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        #D4AF37, #FF00FF, #00FFFF, #D4AF37);
+    border-radius: 12px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.neon-border:hover::before {
+    opacity: 1;
+    animation: neonGlow 2s linear infinite;
+}
+
+@keyframes neonGlow {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+/* Королевский щит */
+.royal-shield {
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 46, 0.9) 0%,
+        rgba(40, 40, 70, 0.9) 100%);
+    border: 3px solid;
+    border-image: 
+        linear-gradient(45deg, 
+            #D4AF37 0%,
+            #B8860B 25%,
+            #DAA520 50%,
+            #B8860B 75%,
+            #D4AF37 100%) 1;
+    position: relative;
+}
+
+.royal-shield::after {
+    content: '👑';
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    font-size: 24px;
+    background: linear-gradient(45deg, #D4AF37, #FFD700);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+}
+
+/* Парящие элементы */
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Дымчатый эффект */
+.smoke-effect {
+    position: relative;
+}
+
+.smoke-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(106, 13, 173, 0.1) 0%, transparent 50%);
+    filter: blur(20px);
+    z-index: -1;
+}
+
+/* Мраморный фон */
+.marble-bg {
+    background: 
+        linear-gradient(45deg, 
+            rgba(26, 26, 46, 0.9) 0%,
+            rgba(40, 40, 70, 0.9) 100%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="%23D4AF37" stroke-width="2"/><path d="M50,0 L50,100 M0,50 L100,50" stroke="%23D4AF37" stroke-width="1"/></svg>');
+    background-size: 100px 100px;
+}
+
+/* Огненный эффект для live */
+.fire-effect {
+    background: linear-gradient(45deg, 
+        rgba(220, 53, 69, 0.1) 0%,
+        rgba(220, 53, 69, 0.3) 50%,
+        rgba(220, 53, 69, 0.1) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.fire-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 69, 0, 0.2) 50%,
+        transparent 100%);
+    animation: fire 1s infinite;
+}
+
+@keyframes fire {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Анимация появления денег */
+.money-rain {
+    position: relative;
+    overflow: hidden;
+}
+
+.money-rain::before {
+    content: '💰💵💎';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: moneyFall 5s linear infinite;
+    font-size: 20px;
+    opacity: 0.3;
+}
+
+@keyframes moneyFall {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+}
+
+/* ===== ПРЕМИУМ КНОПКИ ===== */
+
+/* Кнопка с иконой и текстом */
+.btn-icon-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Группа кнопок */
+.btn-group-luxury {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Кнопка с пульсирующим эффектом */
+.btn-pulse {
+    animation: buttonPulse 2s ease-in-out infinite;
+}
+
+@keyframes buttonPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
+    }
+}
+
+/* Кнопка с tooltip */
+.btn-tooltip {
+    position: relative;
+}
+
+.btn-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(212, 175, 55, 0.95);
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.btn-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(212, 175, 55, 0.95);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.btn-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Кнопка с загрузкой */
+.btn-loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s linear infinite;
+}
+
+/* Кнопка Toggle */
+.btn-toggle {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-toggle.active {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--light-gold) 100%) !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.6) !important;
+}
+
+/* Кнопка с бейджем */
+.btn-badge-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+}
+
+/* Кнопка Ripple эффект */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-ripple:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Минимальная кнопка */
+.btn-minimal {
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-minimal:hover {
+    border-bottom-color: var(--gold);
+    color: var(--light-gold);
+}
+
+/* Блочная кнопка */
+.btn-block {
+    width: 100%;
+    display: block;
+    text-align: center;
+}
+
+/* Кнопка с иконкой слева */
+.btn-icon-left i {
+    margin-right: 10px;
+}
+
+/* Кнопка с иконкой справа */
+.btn-icon-right i {
+    margin-right: 0;
+    margin-left: 10px;
+}

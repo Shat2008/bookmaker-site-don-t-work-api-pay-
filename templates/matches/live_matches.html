@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}Live матчи - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="luxury-card p-4">
+                <!-- Заголовок -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="gold-text mb-2">
+                            <i class="fas fa-broadcast-tower text-danger me-2"></i>Live матчи
+                        </h1>
+                        <p class="text-light mb-0">Ставки в реальном времени</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-danger blink p-2">
+                            <i class="fas fa-circle me-1"></i>ON AIR
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Live матчи -->
+                {% if live_matches %}
+                <div class="row">
+                    {% for match in live_matches %}
+                    <div class="col-md-6 mb-4">
+                        <div class="match-card live p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-circle blink"></i> LIVE
+                                    </span>
+                                    <small class="text-muted ms-2">{{ match.league }}</small>
+                                </div>
+                                <div class="time-badge">
+                                    {{ match.start_time|time:"H:i" }}
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="text-center flex-grow-1">
+                                    <div class="fw-bold fs-5">{{ match.team1 }}</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.coefficient_team1 }}
+                                    </div>
+                                </div>
+                                
+                                <div class="mx-3 text-center">
+                                    <div class="badge bg-dark fs-6">VS</div>
+                                </div>
+                                
+                                <div class="text-center flex-grow-1">
+                                    <div class="fw-bold fs-5">{{ match.team2 }}</div>
+                                    <div class="coefficient-badge mt-2">
+                                        {{ match.coefficient_team2 }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <a href="{% url 'matches:match_detail' match.id %}" 
+                                   class="btn btn-danger w-100">
+                                    <i class="fas fa-bolt me-1"></i>Сделать live-ставку
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-broadcast-tower fa-3x text-muted mb-3"></i>
+                    <h4 class="text-light mb-3">Нет live матчей в данный момент</h4>
+                    <p class="text-muted">Возвращайтесь позже или посмотрите предстоящие матчи</p>
+                    <a href="{% url 'matches:match_list' %}" class="btn btn-gold">
+                        <i class="fas fa-list me-1"></i>Все матчи
+                    </a>
+                </div>
+                {% endif %}
+                
+                <!-- Предстоящие матчи -->
+                {% if upcoming_matches %}
+                <div class="mt-5">
+                    <h3 class="gold-text mb-4">
+                        <i class="fas fa-clock me-2"></i>Ближайшие матчи
+                    </h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Время</th>
+                                    <th>Матч</th>
+                                    <th class="text-center">П1</th>
+                                    <th class="text-center">X</th>
+                                    <th class="text-center">П2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for match in upcoming_matches %}
+                                <tr>
+                                    <td>
+                                        <div class="text-warning">{{ match.start_time|time:"H:i" }}</div>
+                                        <small class="text-muted">{{ match.start_time|date:"d.m" }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">{{ match.team1 }} - {{ match.team2 }}</div>
+                                        <small class="text-muted">{{ match.league }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark">
+                                            {{ match.coefficient_team1 }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if match.coefficient_draw %}
+                                        <span class="badge bg-warning text-dark">
+                                            {{ match.coefficient_draw }}
+                                        </span>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark">
+                                            {{ match.coefficient_team2 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .match-card.live {
+        background: rgba(220, 53, 69, 0.1);
+        border: 2px solid #dc3545;
+        border-radius: 15px;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+    
+    .blink {
+        animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+</style>
+{% endblock %}

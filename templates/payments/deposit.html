@@ -1,0 +1,511 @@
+{% extends 'base.html' %}
+
+{% block title %}Пополнение счета - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Заголовок -->
+            <div class="luxury-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="gold-text mb-2">
+                            <i class="fas fa-wallet me-2"></i>Пополнение счета
+                        </h1>
+                        <p class="text-light mb-0">Выберите способ оплаты и сумму</p>
+                    </div>
+                    <div class="balance-display">
+                        <span class="me-2">Баланс:</span>
+                        <span class="gold-text fw-bold fs-5">{{ user.balance|default:"0.00" }} ₽</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Основной блок -->
+            <div class="row">
+                <!-- Форма пополнения -->
+                <div class="col-lg-8 mb-4">
+                    <div class="luxury-card p-4">
+                        <form method="post" id="depositForm">
+                            {% csrf_token %}
+                            
+                            <!-- Сумма -->
+                            <div class="mb-4">
+                                <label class="form-label text-light mb-3">Сумма пополнения (₽)</label>
+                                <div class="input-group input-group-lg">
+                                    <input type="number" 
+                                           name="amount" 
+                                           id="amountInput"
+                                           class="form-control" 
+                                           value="1000"
+                                           min="{{ min_deposit }}"
+                                           max="{{ max_deposit }}"
+                                           step="10"
+                                           required>
+                                    <span class="input-group-text bg-warning text-dark fw-bold">₽</span>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <small class="text-muted">Мин: {{ min_deposit }} ₽</small>
+                                    <small class="text-muted">Макс: {{ max_deposit }} ₽</small>
+                                </div>
+                                
+                                <!-- Быстрые суммы -->
+                                <div class="d-flex flex-wrap gap-2 mt-4">
+                                    <button type="button" class="btn btn-outline-gold quick-amount" data-amount="100">
+                                        <i class="fas fa-plus me-1"></i>100 ₽
+                                    </button>
+                                    <button type="button" class="btn btn-outline-gold quick-amount" data-amount="500">
+                                        <i class="fas fa-plus me-1"></i>500 ₽
+                                    </button>
+                                    <button type="button" class="btn btn-outline-gold quick-amount" data-amount="1000">
+                                        <i class="fas fa-plus me-1"></i>1000 ₽
+                                    </button>
+                                    <button type="button" class="btn btn-outline-gold quick-amount" data-amount="5000">
+                                        <i class="fas fa-plus me-1"></i>5000 ₽
+                                    </button>
+                                    <button type="button" class="btn btn-outline-gold quick-amount" data-amount="10000">
+                                        <i class="fas fa-plus me-1"></i>10,000 ₽
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Способ оплаты -->
+                            <div class="mb-4">
+                                <label class="form-label text-light mb-3">Способ оплаты</label>
+                                <div class="row g-3">
+                                    <!-- Stripe -->
+                                    <div class="col-md-4">
+                                        <div class="payment-method luxury-card p-4 text-center cursor-pointer transition-all" data-method="stripe">
+                                            <div class="mb-3">
+                                                <i class="fas fa-lock fa-3x text-success"></i>
+                                            </div>
+                                            <div class="fw-bold mb-1">Stripe</div>
+                                            <small class="text-muted">Карта (Int'l)</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Банковская карта -->
+                                    <div class="col-md-4">
+                                        <div class="payment-method luxury-card p-4 text-center cursor-pointer transition-all" data-method="card">
+                                            <div class="mb-3">
+                                                <i class="fas fa-credit-card fa-3x text-primary"></i>
+                                            </div>
+                                            <div class="fw-bold mb-1">Карта</div>
+                                            <small class="text-muted">Visa/Mastercard</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- QIWI -->
+                                    <div class="col-md-4">
+                                        <div class="payment-method luxury-card p-4 text-center cursor-pointer transition-all" data-method="qiwi">
+                                            <div class="mb-3">
+                                                <i class="fas fa-mobile-alt fa-3x text-warning"></i>
+                                            </div>
+                                            <div class="fw-bold mb-1">QIWI</div>
+                                            <small class="text-muted">Кошелек</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- ЮMoney -->
+                                    <div class="col-md-4">
+                                        <div class="payment-method luxury-card p-4 text-center cursor-pointer transition-all" data-method="yoomoney">
+                                            <div class="mb-3">
+                                                <i class="fas fa-gem fa-3x text-danger"></i>
+                                            </div>
+                                            <div class="fw-bold mb-1">ЮMoney</div>
+                                            <small class="text-muted">Быстрый перевод</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- WebMoney -->
+                                    <div class="col-md-4">
+                                        <div class="payment-method luxury-card p-4 text-center cursor-pointer transition-all" data-method="webmoney">
+                                            <div class="mb-3">
+                                                <i class="fas fa-wallet fa-3x text-info"></i>
+                                            </div>
+                                            <div class="fw-bold mb-1">WebMoney</div>
+                                            <small class="text-muted">Электронные деньги</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Криптовалюта -->
+                                    <div class="col-md-4">
+                                        <div class="payment-method luxury-card p-4 text-center cursor-pointer transition-all" data-method="crypto">
+                                            <div class="mb-3">
+                                                <i class="fas fa-bitcoin fa-3x text-warning"></i>
+                                            </div>
+                                            <div class="fw-bold mb-1">Крипто</div>
+                                            <small class="text-muted">BTC/ETH/USDT</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Скрытое поле для способа оплаты -->
+                                <input type="hidden" name="payment_method" id="paymentMethod" value="stripe">
+                            </div>
+                            
+                            <!-- Дополнительные поля (появляются в зависимости от метода) -->
+                            <div id="additionalFields">
+                                <!-- Поля для Stripe (скрыты, т.к. используется отдельная форма) -->
+                                <div class="payment-fields stripe-fields" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Вы будете перенаправлены на безопасную форму оплаты Stripe
+                                    </div>
+                                </div>
+                                
+                                <!-- Поля для карты -->
+                                <div class="payment-fields card-fields" style="display: none;">
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label text-light">Номер карты</label>
+                                            <input type="text" 
+                                                   name="card_number"
+                                                   class="form-control card-input"
+                                                   placeholder="0000 0000 0000 0000"
+                                                   maxlength="19">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-light">Срок действия</label>
+                                            <input type="text" 
+                                                   name="card_expiry"
+                                                   class="form-control"
+                                                   placeholder="ММ/ГГ"
+                                                   maxlength="5">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-light">CVV</label>
+                                            <input type="text" 
+                                                   name="card_cvv"
+                                                   class="form-control"
+                                                   placeholder="123"
+                                                   maxlength="3">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Поля для QIWI -->
+                                <div class="payment-fields qiwi-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label text-light">Номер телефона QIWI</label>
+                                        <input type="tel" 
+                                               name="phone"
+                                               class="form-control"
+                                               placeholder="+7 (999) 999-99-99">
+                                    </div>
+                                </div>
+                                
+                                <!-- Поля для ЮMoney -->
+                                <div class="payment-fields yoomoney-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label text-light">Номер кошелька</label>
+                                        <input type="text" 
+                                               name="wallet"
+                                               class="form-control"
+                                               placeholder="4100XXXXXXXXXX">
+                                    </div>
+                                </div>
+                                
+                                <!-- Поля для WebMoney -->
+                                <div class="payment-fields webmoney-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label text-light">Номер кошелька WebMoney</label>
+                                        <input type="text" 
+                                               name="wallet"
+                                               class="form-control"
+                                               placeholder="Z123456789012">
+                                    </div>
+                                </div>
+                                
+                                <!-- Поля для Криптовалюты -->
+                                <div class="payment-fields crypto-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label text-light">Адрес кошелька</label>
+                                        <input type="text" 
+                                               name="wallet"
+                                               class="form-control"
+                                               placeholder="1A1z7agoat...">
+                                    </div>
+                                </div>
+                            </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-light">Номер телефона QIWI</label>
+                                        <input type="tel" 
+                                               name="phone"
+                                               class="form-control"
+                                               placeholder="+7 (999) 999-99-99">
+                                    </div>
+                                </div>
+                                
+                                <!-- Поля для ЮMoney -->
+                                <div class="payment-fields yoomoney-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label text-light">Номер кошелька</label>
+                                        <input type="text" 
+                                               name="wallet"
+                                               class="form-control"
+                                               placeholder="4100XXXXXXXXXX">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Информация о платеже -->
+                            <div class="mb-4 p-4" style="background: rgba(212, 175, 55, 0.1); border-radius: 10px;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="text-light mb-2">Сумма к оплате:</div>
+                                        <div class="fs-3 fw-bold text-warning" id="amountDisplay">1,000 ₽</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-light mb-2">Комиссия:</div>
+                                        <div class="fs-4 fw-bold text-success" id="feeDisplay">0 ₽</div>
+                                        <small class="text-muted">Без комиссии</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Кнопка оплаты -->
+                            <button type="submit" class="btn btn-gold w-100 py-3 fs-5 fw-bold">
+                                <i class="fas fa-lock me-2"></i>Перейти к оплате
+                            </button>
+                            
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    Нажимая кнопку, вы соглашаетесь с 
+                                    <a href="{% url 'core:rules' %}" class="gold-text">условиями</a>
+                                </small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Информационный блок -->
+                <div class="col-lg-4">
+                    <!-- Бонусы -->
+                    <div class="luxury-card p-4 mb-4">
+                        <h5 class="gold-text mb-3">
+                            <i class="fas fa-gift me-2"></i>Бонусы при пополнении
+                        </h5>
+                        <ul class="list-unstyled text-light">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Приветственный бонус +100%
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Кэшбэк 5% каждую неделю
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                VIP статус от 10,000 ₽
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Информация -->
+                    <div class="luxury-card p-4">
+                        <h5 class="gold-text mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Информация
+                        </h5>
+                        <div class="text-light small">
+                            <p class="mb-2">
+                                <i class="fas fa-shield-alt text-warning me-2"></i>
+                                Все платежи защищены SSL
+                            </p>
+                            <p class="mb-2">
+                                <i class="fas fa-bolt text-warning me-2"></i>
+                                Зачисление в течение 5 минут
+                            </p>
+                            <p class="mb-0">
+                                <i class="fas fa-headset text-warning me-2"></i>
+                                Поддержка 24/7
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-method {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid transparent;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .payment-method:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    .payment-method.selected {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: #D4AF37;
+        transform: translateY(-2px);
+    }
+    
+    .card-input {
+        letter-spacing: 2px;
+        font-family: monospace;
+    }
+    
+    .quick-amount.active {
+        background: #D4AF37;
+        color: #000;
+        border-color: #D4AF37;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const amountInput = document.getElementById('amountInput');
+    const amountDisplay = document.getElementById('amountDisplay');
+    const feeDisplay = document.getElementById('feeDisplay');
+    const paymentMethodInput = document.getElementById('paymentMethod');
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    const paymentFields = document.querySelectorAll('.payment-fields');
+    
+    // Обновление отображения суммы
+    function updateAmountDisplay() {
+        const amount = parseInt(amountInput.value) || 0;
+        const formatted = amount.toLocaleString('ru-RU');
+        amountDisplay.textContent = formatted + ' ₽';
+        
+        // Рассчитываем комиссию (0% для теста)
+        const fee = 0; // В реальном проекте будет расчет комиссии
+        feeDisplay.textContent = fee + ' ₽';
+    }
+    
+    // Выбор способа оплаты
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            // Снимаем выделение со всех
+            paymentMethods.forEach(m => m.classList.remove('selected'));
+            
+            // Выделяем выбранный
+            this.classList.add('selected');
+            
+            // Сохраняем значение
+            const methodType = this.dataset.method;
+            paymentMethodInput.value = methodType;
+            
+            // Показываем соответствующие поля
+            paymentFields.forEach(field => {
+                if (field.classList.contains(methodType + '-fields')) {
+                    field.style.display = 'block';
+                } else {
+                    field.style.display = 'none';
+                }
+            });
+        });
+    });
+    document.querySelectorAll('.quick-amount').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Снимаем активный класс со всех
+            document.querySelectorAll('.quick-amount').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // Добавляем активный класс к выбранной
+            this.classList.add('active');
+            
+            // Устанавливаем сумму
+            amountInput.value = this.dataset.amount;
+            updateAmountDisplay();
+        });
+    });
+    
+    // Маска для номера карты
+    const cardInput = document.querySelector('.card-input');
+    if (cardInput) {
+        cardInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = value.substring(0, 19);
+        });
+    }
+    
+    // Маска для срока действия карты
+    const expiryInput = document.querySelector('input[name="card_expiry"]');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value.substring(0, 5);
+        });
+    }
+    
+    // Маска для телефона
+    const phoneInput = document.querySelector('input[name="phone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.startsWith('7') || value.startsWith('8')) {
+                value = '+7 ' + value.substring(1);
+            }
+            if (value.length > 4) value = value.substring(0, 4) + ' ' + value.substring(4);
+            if (value.length > 8) value = value.substring(0, 8) + ' ' + value.substring(8);
+            if (value.length > 13) value = value.substring(0, 13);
+            e.target.value = value;
+        });
+    }
+    
+    // Инициализация
+    updateAmountDisplay();
+    
+    // Выбираем первый способ оплаты по умолчанию (Stripe)
+    if (paymentMethods.length > 0) {
+        paymentMethods[0].click();
+    }
+    
+    // Выбираем первую быструю сумму
+    if (document.querySelectorAll('.quick-amount').length > 0) {
+        document.querySelectorAll('.quick-amount')[0].classList.add('active');
+    }
+    
+    // Подтверждение при отправке
+    document.getElementById('depositForm').addEventListener('submit', function(e) {
+        const amount = parseInt(amountInput.value) || 0;
+        const method = paymentMethodInput.value;
+        const min = parseInt('{{ min_deposit }}') || 100;
+        const max = parseInt('{{ max_deposit }}') || 100000;
+        
+        if (amount < min) {
+            e.preventDefault();
+            alert('Минимальная сумма пополнения: ' + min + ' ₽');
+            return;
+        }
+        
+        if (amount > max) {
+            e.preventDefault();
+            alert('Максимальная сумма пополнения: ' + max + ' ₽');
+            return;
+        }
+        
+        // Если выбран Stripe, перенаправляем на форму Stripe
+        if (method === 'stripe') {
+            // Форма будет обработана на сервере, который перенаправит на stripe-deposit
+            return;
+        }
+        
+        if (!confirm('Подтверждаете переход к оплате ' + amount + ' ₽?')) {
+            e.preventDefault();
+            return;
+        }
+    });
+});
+</script>
+{% endblock %}

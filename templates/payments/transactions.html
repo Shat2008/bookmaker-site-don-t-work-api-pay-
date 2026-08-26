@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block title %}История транзакций - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Заголовок -->
+            <div class="luxury-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="gold-text mb-2">
+                            <i class="fas fa-exchange-alt me-2"></i>История транзакций
+                        </h1>
+                        <p class="text-light mb-0">Все финансовые операции на вашем счете</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'payments:deposit' %}" class="btn btn-gold">
+                            <i class="fas fa-plus me-1"></i>Пополнить
+                        </a>
+                        <a href="{% url 'payments:withdraw' %}" class="btn btn-outline-gold">
+                            <i class="fas fa-minus me-1"></i>Вывести
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Статистика -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="luxury-card p-3">
+                        <div class="text-light mb-1">Всего пополнено</div>
+                        <div class="fs-3 fw-bold text-success">{{ total_deposits|default:"0.00" }} ₽</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="luxury-card p-3">
+                        <div class="text-light mb-1">Всего выведено</div>
+                        <div class="fs-3 fw-bold text-danger">{{ total_withdrawals|default:"0.00" }} ₽</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="luxury-card p-3">
+                        <div class="text-light mb-1">Выиграно</div>
+                        <div class="fs-3 fw-bold text-warning">{{ total_wins|default:"0.00" }} ₽</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="luxury-card p-3">
+                        <div class="text-light mb-1">Текущий баланс</div>
+                        <div class="fs-3 fw-bold gold-text">{{ user.balance|default:"0.00" }} ₽</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Фильтры -->
+            <div class="luxury-card p-4 mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <select class="form-select" id="typeFilter">
+                            <option value="">Все типы</option>
+                            <option value="deposit">Пополнения</option>
+                            <option value="withdrawal">Выводы</option>
+                            <option value="bet">Ставки</option>
+                            <option value="win">Выигрыши</option>
+                            <option value="bonus">Бонусы</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Все статусы</option>
+                            <option value="completed">Завершенные</option>
+                            <option value="pending">В обработке</option>
+                            <option value="failed">Неудачные</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" id="dateFromFilter" placeholder="С даты">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" id="dateToFilter" placeholder="По дату">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Список транзакций -->
+            <div class="luxury-card p-4">
+                {% if transactions %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Тип</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>Детали</th>
+                                <th>ID транзакции</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                            <tr class="transaction-row" 
+                                data-type="{{ transaction.transaction_type }}"
+                                data-status="{{ transaction.status }}">
+                                <td>
+                                    <div>{{ transaction.created_at|date:"d.m.Y" }}</div>
+                                    <small class="text-muted">{{ transaction.created_at|time:"H:i" }}</small>
+                                </td>
+                                <td>
+                                    {% if transaction.transaction_type == 'deposit' %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-arrow-down me-1"></i>Пополнение
+                                    </span>
+                                    {% elif transaction.transaction_type == 'withdrawal' %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-arrow-up me-1"></i>Вывод
+                                    </span>
+                                    {% elif transaction.transaction_type == 'bet' %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-bolt me-1"></i>Ставка
+                                    </span>
+                                    {% elif transaction.transaction_type == 'win' %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-trophy me-1"></i>Выигрыш
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ transaction.get_transaction_type_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if transaction.transaction_type in 'deposit,win,bonus' %}
+                                    <span class="fw-bold text-success">+{{ transaction.amount }} ₽</span>
+                                    {% else %}
+                                    <span class="fw-bold text-danger">-{{ transaction.amount }} ₽</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if transaction.status == 'completed' %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Завершена
+                                    </span>
+                                    {% elif transaction.status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock me-1"></i>В обработке
+                                    </span>
+                                    {% elif transaction.status == 'failed' %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times me-1"></i>Неудачная
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ transaction.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-light">{{ transaction.description|truncatechars:30 }}</small>
+                                    {% if transaction.bet %}
+                                    <br>
+                                    <a href="{% url 'matches:match_detail' transaction.bet.match.id %}" 
+                                       class="small gold-text">
+                                        <i class="fas fa-external-link-alt me-1"></i>К матчу
+                                    </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-muted">#{{ transaction.id }}</small>
+                                    {% if transaction.external_id %}
+                                    <br>
+                                    <small class="text-muted">{{ transaction.external_id|truncatechars:15 }}</small>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Экспорт -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div>
+                        <small class="text-muted">
+                            Показано {{ transactions|length }} транзакций
+                        </small>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="exportTransactions()">
+                            <i class="fas fa-download me-1"></i>Экспорт в CSV
+                        </button>
+                    </div>
+                </div>
+                
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                    <h4 class="text-light mb-3">У вас пока нет транзакций</h4>
+                    <p class="text-muted mb-4">Все финансовые операции будут отображаться здесь</p>
+                    <a href="{% url 'payments:deposit' %}" class="btn btn-gold">
+                        <i class="fas fa-plus me-2"></i>Пополнить счет
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Фильтрация транзакций
+document.addEventListener('DOMContentLoaded', function() {
+    const typeFilter = document.getElementById('typeFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const dateFromFilter = document.getElementById('dateFromFilter');
+    const dateToFilter = document.getElementById('dateToFilter');
+    const transactionRows = document.querySelectorAll('.transaction-row');
+    
+    function filterTransactions() {
+        const type = typeFilter.value;
+        const status = statusFilter.value;
+        const dateFrom = dateFromFilter.value;
+        const dateTo = dateToFilter.value;
+        
+        transactionRows.forEach(row => {
+            let show = true;
+            
+            // Фильтр по типу
+            if (type && row.dataset.type !== type) {
+                show = false;
+            }
+            
+            // Фильтр по статусу
+            if (status && row.dataset.status !== status) {
+                show = false;
+            }
+            
+            // Фильтр по дате
+            if (dateFrom || dateTo) {
+                const rowDate = row.cells[0].querySelector('div').textContent;
+                const rowDateObj = new Date(rowDate.split('.').reverse().join('-'));
+                
+                if (dateFrom) {
+                    const fromDate = new Date(dateFrom);
+                    if (rowDateObj < fromDate) {
+                        show = false;
+                    }
+                }
+                
+                if (dateTo) {
+                    const toDate = new Date(dateTo);
+                    if (rowDateObj > toDate) {
+                        show = false;
+                    }
+                }
+            }
+            
+            row.style.display = show ? '' : 'none';
+        });
+    }
+    
+    typeFilter.addEventListener('change', filterTransactions);
+    statusFilter.addEventListener('change', filterTransactions);
+    dateFromFilter.addEventListener('change', filterTransactions);
+    dateToFilter.addEventListener('change', filterTransactions);
+});
+
+// Экспорт в CSV
+function exportTransactions() {
+    let csv = 'Дата,Тип,Сумма,Статус,Описание,ID\n';
+    
+    document.querySelectorAll('.transaction-row').forEach(row => {
+        if (row.style.display !== 'none') {
+            const cells = row.cells;
+            const date = cells[0].querySelector('div').textContent + ' ' + 
+                        cells[0].querySelector('small').textContent;
+            const type = cells[1].textContent.trim();
+            const amount = cells[2].textContent.trim();
+            const status = cells[3].textContent.trim();
+            const description = cells[4].querySelector('small').textContent.trim();
+            const id = cells[5].querySelector('small').textContent.trim();
+            
+            csv += `"${date}","${type}","${amount}","${status}","${description}","${id}"\n`;
+        }
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `transactions_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+{% endblock %}

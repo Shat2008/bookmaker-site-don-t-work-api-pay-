@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Ставка размещена! - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="luxury-card p-5 text-center">
+                <!-- Иконка успеха -->
+                <div class="mb-4">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle fa-5x text-success"></i>
+                    </div>
+                </div>
+                
+                <!-- Заголовок -->
+                <h1 class="gold-text mb-3">Ставка размещена успешно!</h1>
+                <p class="text-light fs-5 mb-4">Ваша ставка принята и ожидает расчета</p>
+                
+                <!-- Информация о ставке -->
+                <div class="bet-info-card p-4 mb-4">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="text-light mb-2">Матч:</div>
+                            <div class="fw-bold fs-5">{{ bet.match.team1 }} vs {{ bet.match.team2 }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-light mb-2">Тип ставки:</div>
+                            <div class="fw-bold fs-5">{{ bet.get_bet_type_display }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="text-light mb-2">Сумма:</div>
+                            <div class="fw-bold fs-4 text-warning">{{ bet.amount }} ₽</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-light mb-2">Коэффициент:</div>
+                            <div class="fw-bold fs-4 text-success">{{ bet.coefficient }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-light mb-2">Потенциальный выигрыш:</div>
+                            <div class="fw-bold fs-4 gold-text">{{ bet.potential_win }} ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="text-light mb-2">Время размещения:</div>
+                            <div class="fw-bold">{{ bet.created_at|date:"d.m.Y H:i:s" }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Номер ставки -->
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-hashtag me-2"></i>
+                    <strong>Номер ставки:</strong> #{{ bet.id }}
+                </div>
+                
+                <!-- Действия -->
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <a href="{% url 'matches:match_detail' bet.match.id %}" class="btn btn-outline-gold">
+                        <i class="fas fa-arrow-left me-2"></i>Вернуться к матчу
+                    </a>
+                    <a href="{% url 'users:user_bets' %}" class="btn btn-gold">
+                        <i class="fas fa-history me-2"></i>Мои ставки
+                    </a>
+                    <a href="{% url 'matches:match_list' %}" class="btn btn-outline-gold">
+                        <i class="fas fa-list me-2"></i>Все матчи
+                    </a>
+                </div>
+                
+                <!-- Информация -->
+                <div class="mt-5 pt-4 border-top border-secondary">
+                    <p class="text-light mb-2">
+                        <i class="fas fa-info-circle me-2 text-warning"></i>
+                        Ставка будет рассчитана после завершения матча
+                    </p>
+                    <p class="text-muted small">
+                        Следите за результатами в разделе "Мои ставки"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-icon {
+        animation: scaleIn 0.5s ease-out;
+    }
+    
+    @keyframes scaleIn {
+        0% { transform: scale(0); opacity: 0; }
+        70% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .bet-info-card {
+        background: linear-gradient(135deg, 
+            rgba(26, 26, 46, 0.9) 0%, 
+            rgba(40, 40, 70, 0.9) 100%);
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        border-radius: 15px;
+    }
+</style>
+{% endblock %}

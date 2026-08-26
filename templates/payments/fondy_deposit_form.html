@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Пополнение через Fondy</h2>
+<form method="post">
+  {% csrf_token %}
+  <label>Сумма (UAH)</label>
+  <input name="amount" type="number" min="1" step="0.01" required />
+  <button type="submit">Перейти к оплате</button>
+</form>
+{% endblock %}

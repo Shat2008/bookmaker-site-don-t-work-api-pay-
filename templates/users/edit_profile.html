@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование профиля - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="luxury-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="gold-text mb-0">
+                        <i class="fas fa-edit me-2"></i>Редактирование профиля
+                    </h1>
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline-gold btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Назад
+                    </a>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label text-light">
+                            Имя пользователя
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <div class="alert alert-danger mt-1">
+                            {{ form.username.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label text-light">
+                            Email
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="alert alert-danger mt-1">
+                            {{ form.email.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label text-light">
+                            Имя
+                        </label>
+                        {{ form.first_name }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label text-light">
+                            Фамилия
+                        </label>
+                        {{ form.last_name }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-gold w-100 py-2">
+                        <i class="fas fa-save me-2"></i>Сохранить изменения
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: #fff;
+    }
+    
+    .form-control:focus {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: #D4AF37;
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        color: #fff;
+    }
+    
+    .form-label {
+        font-weight: 500;
+    }
+</style>
+{% endblock %}

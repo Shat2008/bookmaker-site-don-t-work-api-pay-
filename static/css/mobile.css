@@ -1,0 +1,159 @@
+/* Mobile-specific overrides and helpers */
+
+/* Prevent text size changes on mobile browsers */
+html, body {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Make media responsive */
+img, video, iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Reduce main padding on small screens */
+@media (max-width: 992px) {
+    main.container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .navbar .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .nav-link-luxury {
+        padding: 8px 10px;
+        font-size: 0.95rem;
+    }
+}
+
+/* Compact components for phones */
+@media (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+
+    .balance-display {
+        font-size: 0.95rem;
+        padding: 6px 10px;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .balance-display .user-balance {
+        font-size: 1rem;
+    }
+
+    .match-card, .bet-card {
+        padding: 10px;
+        margin: 6px 0;
+    }
+
+    .coefficient-badge {
+        min-width: 56px;
+        padding: 6px 10px;
+        font-size: 1rem;
+    }
+
+    .bet-option {
+        padding: 10px;
+    }
+
+    .btn {
+        white-space: normal;
+    }
+
+    .dropdown-menu {
+        min-width: 220px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+    .btn-group-luxury {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group-luxury .btn {
+        width: 100%;
+        margin-bottom: 6px;
+    }
+
+    .dropdown-menu {
+        min-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .vip-badge {
+        display: none;
+    }
+
+    .navbar-brand {
+        font-size: 1.15rem;
+    }
+
+    .form-label {
+        font-size: 0.95rem;
+    }
+
+    .form-control, .form-select {
+        font-size: 0.95rem;
+        padding: 8px 10px;
+    }
+
+    /* Make bet slip dropdown full width and easy to tap */
+    #betSlip {
+        min-height: 80px;
+    }
+}
+
+/* Utility: make clickable badges and coefficients larger targets */
+@media (max-width: 768px) {
+    .coefficient-badge, .btn, .bet-option {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        touch-action: manipulation;
+        -ms-touch-action: manipulation;
+    }
+}
+
+/* Quick action cards on home page */
+.quick-card {
+    min-height: 140px;
+}
+
+/* Team logos */
+.team-logo {
+    max-height: 80px;
+    margin-bottom: 0.75rem;
+}
+.team-logo-placeholder {
+    font-size: 80px;
+    color: #D4AF37;
+    opacity: 0.3;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .quick-card {
+        min-height: 110px;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .team-logo {
+        max-height: 56px;
+    }
+
+    .team-logo-placeholder {
+        font-size: 56px;
+    }
+
+    .coefficient-box {
+        padding: 18px 12px !important;
+        font-size: 1.6rem !important;
+    }
+}

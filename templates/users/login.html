@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход - VIP BET{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+        background: linear-gradient(135deg, var(--dark-bg) 0%, var(--light-bg) 100%);
+    }
+    
+    .login-card {
+        background: linear-gradient(135deg, 
+            rgba(26, 26, 46, 0.95) 0%, 
+            rgba(40, 40, 70, 0.95) 100%);
+        border: 3px solid;
+        border-image: linear-gradient(45deg, #D4AF37, #B8860B, #D4AF37) 1;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+        width: 100%;
+        max-width: 420px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .login-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+        animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .login-header {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .login-body {
+        padding: 2.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #D4AF37, #B8860B);
+        color: #000;
+        font-weight: bold;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 10px;
+        font-size: 1.05em;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-login::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.4s ease;
+    }
+    
+    .btn-login:hover {
+        background: linear-gradient(135deg, #B8860B, #D4AF37);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5);
+    }
+    
+    .btn-login:hover::before {
+        left: 100%;
+    }
+    
+    .btn-login:active {
+        transform: translateY(-1px);
+    }
+    
+    .form-control, .form-check-input {
+        background: rgba(255, 255, 255, 0.08);
+        border: 2px solid rgba(212, 175, 55, 0.2);
+        color: var(--text-light);
+    }
+    
+    .form-control:focus, .form-check-input:focus {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--gold);
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+        color: var(--text-light);
+    }
+    
+    .form-control::placeholder {
+        color: rgba(240, 230, 210, 0.5);
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-light);
+        margin-bottom: 0.8rem;
+    }
+    
+    .forgot-password {
+        color: #D4AF37;
+        text-decoration: none;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+    }
+    
+    .forgot-password:hover {
+        color: #FFD700;
+        text-decoration: underline;
+    }
+    
+    .register-link {
+        color: var(--gold);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .register-link:hover {
+        color: var(--light-gold);
+        text-decoration: underline;
+    }
+    
+    .alert {
+        background: rgba(220, 53, 69, 0.15);
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        color: var(--text-light);
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1 class="gold-text mb-2">
+                <i class="fas fa-sign-in-alt me-2"></i>Вход в аккаунт
+            </h1>
+            <p class="text-light mb-0">Войдите, чтобы продолжить</p>
+        </div>
+        
+        <div class="login-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-danger mb-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Неверное имя пользователя или пароль
+                </div>
+                {% endif %}
+                
+                <div class="form-group mb-4">
+                    <label class="form-label" for="id_username">
+                        <i class="fas fa-user me-2 gold-text"></i>Имя пользователя
+                    </label>
+                    <input type="text" name="username" id="id_username" 
+                           class="form-control" 
+                           placeholder="Введите имя пользователя"
+                           autocomplete="username"
+                           required>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label class="form-label" for="id_password">
+                        <i class="fas fa-lock me-2 gold-text"></i>Пароль
+                    </label>
+                    <input type="password" name="password" id="id_password" 
+                           class="form-control" 
+                           placeholder="Введите пароль"
+                           autocomplete="current-password"
+                           required>
+                </div>
+                
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" 
+                           name="remember" id="id_remember">
+                    <label class="form-check-label text-light" for="id_remember">
+                        Запомнить меня
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-login mb-4">
+                    <i class="fas fa-sign-in-alt me-2"></i>Войти в аккаунт
+                </button>
+                
+                <div class="text-center mb-3">
+                    <a href="#" class="forgot-password small">
+                        <i class="fas fa-question-circle me-1"></i>Забыли пароль?
+                    </a>
+                </div>
+                
+                <hr style="border-color: rgba(212, 175, 55, 0.2); margin: 1.5rem 0;">
+                
+                <div class="text-center">
+                    <p class="text-light small mb-0">
+                        Нет аккаунта? 
+                        <a href="{% url 'users:register' %}" class="register-link">
+                            Зарегистрироваться здесь
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

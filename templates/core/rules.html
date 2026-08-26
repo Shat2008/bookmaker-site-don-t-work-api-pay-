@@ -1,0 +1,480 @@
+{% extends 'base.html' %}
+
+{% block title %}Правила и условия - VIP BET{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rules-container {
+        min-height: 80vh;
+        padding: 3rem 0;
+    }
+    
+    .rules-card {
+        background: linear-gradient(135deg, 
+            rgba(26, 26, 46, 0.95) 0%, 
+            rgba(40, 40, 70, 0.95) 100%);
+        border: 3px solid;
+        border-image: linear-gradient(45deg, #D4AF37, #B8860B, #D4AF37) 1;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .rules-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .rules-content {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 1rem;
+    }
+    
+    .rules-content::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .rules-content::-webkit-scrollbar-track {
+        background: rgba(212, 175, 55, 0.1);
+        border-radius: 4px;
+    }
+    
+    .rules-content::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #D4AF37, #B8860B);
+        border-radius: 4px;
+    }
+    
+    .rules-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    
+    .rules-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .rules-section h3 {
+        color: #D4AF37;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .rules-section h3 i {
+        margin-right: 10px;
+    }
+    
+    .rules-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    .rules-list li {
+        margin-bottom: 0.8rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    .rules-list li:before {
+        content: '•';
+        color: #D4AF37;
+        font-size: 1.5em;
+        position: absolute;
+        left: 0;
+        top: -2px;
+    }
+    
+    .rules-note {
+        background: rgba(212, 175, 55, 0.1);
+        border-left: 4px solid #D4AF37;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .rules-warning {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 4px solid #dc3545;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .rules-table {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    
+    .rules-table th {
+        background: rgba(212, 175, 55, 0.2);
+        color: #D4AF37;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    .rules-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    
+    .rules-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .rules-table tr:hover {
+        background: rgba(212, 175, 55, 0.05);
+    }
+    
+    .age-warning {
+        background: linear-gradient(45deg, rgba(220, 53, 69, 0.1), rgba(255, 193, 7, 0.1));
+        border: 2px solid #dc3545;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        margin: 2rem 0;
+        animation: pulseWarning 2s infinite;
+    }
+    
+    @keyframes pulseWarning {
+        0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+    
+    .accept-checkbox {
+        background: rgba(212, 175, 55, 0.1);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 2rem;
+        text-align: center;
+    }
+    
+    .btn-back {
+        background: linear-gradient(45deg, #D4AF37, #B8860B);
+        color: #000;
+        font-weight: bold;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        margin-top: 2rem;
+        transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+        background: linear-gradient(45deg, #B8860B, #D4AF37);
+        transform: translateY(-2px);
+    }
+    
+    .rules-date {
+        color: rgba(240, 230, 210, 0.7);
+        font-size: 0.9em;
+        text-align: right;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="rules-container">
+        <div class="rules-card">
+            <div class="rules-header">
+                <h1 class="gold-text mb-3">
+                    <i class="fas fa-gavel me-2"></i>Правила и условия
+                </h1>
+                <p class="text-light">Ознакомьтесь с правилами использования сервиса VIP BET</p>
+            </div>
+            
+            <div class="rules-content">
+                <!-- Предупреждение о возрасте -->
+                <div class="age-warning">
+                    <h3 class="text-danger mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>ВНИМАНИЕ!
+                    </h3>
+                    <p class="fs-5 fw-bold text-light">
+                        Данная услуга предназначена исключительно для лиц, достигших 18-летнего возраста.
+                    </p>
+                    <p class="text-light mb-0">
+                        Используя наш сервис, вы подтверждаете, что вам исполнилось 18 лет и 
+                        вы согласны со всеми правилами и условиями.
+                    </p>
+                </div>
+                
+                <!-- Раздел 1: Общие положения -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-book me-2"></i>1. Общие положения</h3>
+                    <ul class="rules-list">
+                        <li>VIP BET - это онлайн-платформа для ставок на спортивные события.</li>
+                        <li>Пользователь обязан предоставить достоверную информацию при регистрации.</li>
+                        <li>Один пользователь может иметь только один аккаунт.</li>
+                        <li>Запрещается передача аккаунта третьим лицам.</li>
+                        <li>Администрация оставляет за собой право блокировать аккаунты при нарушении правил.</li>
+                    </ul>
+                </div>
+                
+                <!-- Раздел 2: Регистрация и аккаунт -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-user me-2"></i>2. Регистрация и управление аккаунтом</h3>
+                    <ul class="rules-list">
+                        <li>Для регистрации необходимо указать действительный email и телефон.</li>
+                        <li>Пользователь несет ответственность за сохранность своих учетных данных.</li>
+                        <li>При утере доступа необходимо немедленно связаться с поддержкой.</li>
+                        <li>Верификация аккаунта может потребоваться для вывода средств.</li>
+                    </ul>
+                    
+                    <div class="rules-note">
+                        <strong><i class="fas fa-info-circle me-2"></i>Примечание:</strong>
+                        Для верификации могут потребоваться копии документов, удостоверяющих личность.
+                    </div>
+                </div>
+                
+                <!-- Раздел 3: Финансовые операции -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-money-bill-wave me-2"></i>3. Финансовые операции</h3>
+                    
+                    <h4 class="text-warning mt-3 mb-2">3.1 Пополнение счета</h4>
+                    <ul class="rules-list">
+                        <li>Минимальная сумма пополнения: 100 рублей.</li>
+                        <li>Максимальная сумма пополнения: 100,000 рублей в сутки.</li>
+                        <li>Средства зачисляются в течение 15 минут после оплаты.</li>
+                        <li>При возникновении проблем с пополнением обратитесь в поддержку.</li>
+                    </ul>
+                    
+                    <h4 class="text-warning mt-3 mb-2">3.2 Вывод средств</h4>
+                    <ul class="rules-list">
+                        <li>Минимальная сумма вывода: 100 рублей.</li>
+                        <li>Максимальная сумма вывода: 50,000 рублей за транзакцию.</li>
+                        <li>Вывод обрабатывается в течение 24 часов в рабочие дни.</li>
+                        <li>Для первого вывода требуется верификация аккаунта.</li>
+                    </ul>
+                    
+                    <div class="rules-warning">
+                        <strong><i class="fas fa-exclamation-circle me-2"></i>Важно:</strong>
+                        Средства могут быть выведены только на те реквизиты, с которых производилось пополнение.
+                    </div>
+                </div>
+                
+                <!-- Раздел 4: Ставки -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-chart-line me-2"></i>4. Правила ставок</h3>
+                    
+                    <div class="rules-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Тип ставки</th>
+                                    <th>Минимальная сумма</th>
+                                    <th>Максимальная сумма</th>
+                                    <th>Комиссия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ординар</td>
+                                    <td>10 ₽</td>
+                                    <td>50,000 ₽</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Экспресс</td>
+                                    <td>50 ₽</td>
+                                    <td>25,000 ₽</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Система</td>
+                                    <td>100 ₽</td>
+                                    <td>10,000 ₽</td>
+                                    <td>0%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <ul class="rules-list mt-3">
+                        <li>Ставки принимаются до начала события.</li>
+                        <li>Коэффициенты фиксируются в момент принятия ставки.</li>
+                        <li>Отмена ставки возможна только до начала события.</li>
+                        <li>Результаты ставок определяются по официальным источникам.</li>
+                        <li>Администрация оставляет за собой право отменить ставку при подозрении на мошенничество.</li>
+                    </ul>
+                </div>
+                
+                <!-- Раздел 5: Бонусы и акции -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-gift me-2"></i>5. Бонусы и акции</h3>
+                    <ul class="rules-list">
+                        <li>Приветственный бонус 100 рублей начисляется при первой регистрации.</li>
+                        <li>Бонусные средства имеют вейджер (требование по отыгрышу) 5x.</li>
+                        <li>Бонус действителен в течение 30 дней с момента получения.</li>
+                        <li>Один пользователь может получить приветственный бонус только один раз.</li>
+                        <li>Администрация вправе изменять условия акций без предварительного уведомления.</li>
+                    </ul>
+                    
+                    <div class="rules-note">
+                        <strong><i class="fas fa-info-circle me-2"></i>Что такое вейджер (wager)?</strong><br>
+                        Это коэффициент, на который нужно умножить сумму бонуса, чтобы вывести выигрыш. 
+                        Например, при бонусе 100 рублей и вейджере 5x необходимо сделать ставок на 500 рублей.
+                    </div>
+                </div>
+                
+                <!-- Раздел 6: Ответственность -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-balance-scale me-2"></i>6. Ответственность</h3>
+                    <ul class="rules-list">
+                        <li>Пользователь несет полную ответственность за свои ставки.</li>
+                        <li>VIP BET не несет ответственности за технические сбои у провайдеров.</li>
+                        <li>Запрещается использование автоматических скриптов и ботов.</li>
+                        <li>При обнаружении мошенничества аккаунт будет заблокирован без возврата средств.</li>
+                    </ul>
+                </div>
+                
+                <!-- Раздел 7: Конфиденциальность -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-shield-alt me-2"></i>7. Конфиденциальность</h3>
+                    <ul class="rules-list">
+                        <li>Все личные данные пользователей защищены и не передаются третьим лицам.</li>
+                        <li>Финансовые транзакции защищены SSL-шифрованием.</li>
+                        <li>Мы используем файлы cookies для улучшения работы сервиса.</li>
+                        <li>Пользователь может запросить удаление своих данных, обратившись в поддержку.</li>
+                    </ul>
+                </div>
+                
+                <!-- Раздел 8: Изменение правил -->
+                <div class="rules-section">
+                    <h3><i class="fas fa-edit me-2"></i>8. Изменение правил</h3>
+                    <ul class="rules-list">
+                        <li>Администрация оставляет за собой право изменять правила без предварительного уведомления.</li>
+                        <li>Изменения вступают в силу с момента публикации на сайте.</li>
+                        <li>Продолжая использование сервиса после изменений, вы соглашаетесь с новыми правилами.</li>
+                    </ul>
+                    
+                    <div class="rules-date">
+                        <i class="fas fa-calendar-alt me-1"></i>Дата последнего обновления: {{ current_date|date:"d.m.Y" }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Чекбокс принятия правил -->
+            <div class="accept-checkbox">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="agreeRules" checked disabled>
+                    <label class="form-check-label text-light" for="agreeRules">
+                        Я ознакомился(ась) и согласен(на) со всеми правилами и условиями
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Кнопка возврата -->
+            <div class="text-center">
+                <button onclick="window.history.back()" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Вернуться назад
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Подсветка текущего раздела при прокрутке
+    const sections = document.querySelectorAll('.rules-section');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.backgroundColor = 'rgba(212, 175, 55, 0.05)';
+                entry.target.style.transition = 'background-color 0.3s';
+            } else {
+                entry.target.style.backgroundColor = '';
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+    
+    // Добавление якорных ссылок для навигации
+    sections.forEach((section, index) => {
+        const heading = section.querySelector('h3');
+        const anchor = document.createElement('a');
+        anchor.href = `#section-${index + 1}`;
+        anchor.id = `section-${index + 1}`;
+        anchor.style.position = 'relative';
+        anchor.style.top = '-80px';
+        anchor.style.display = 'block';
+        anchor.style.visibility = 'hidden';
+        section.parentNode.insertBefore(anchor, section);
+    });
+    
+    // Копирование текста правил
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'btn btn-outline-gold btn-sm position-fixed';
+    copyBtn.style.bottom = '20px';
+    copyBtn.style.right = '20px';
+    copyBtn.style.zIndex = '1000';
+    copyBtn.innerHTML = '<i class="fas fa-copy me-1"></i>Копировать правила';
+    copyBtn.title = 'Скопировать текст правил';
+    
+    copyBtn.addEventListener('click', function() {
+        const rulesText = document.querySelector('.rules-content').innerText;
+        navigator.clipboard.writeText(rulesText).then(() => {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Скопировано!';
+            copyBtn.disabled = true;
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.disabled = false;
+            }, 2000);
+        });
+    });
+    
+    document.body.appendChild(copyBtn);
+    
+    // Печать правил
+    const printBtn = document.createElement('button');
+    printBtn.className = 'btn btn-outline-gold btn-sm position-fixed';
+    printBtn.style.bottom = '60px';
+    printBtn.style.right = '20px';
+    printBtn.style.zIndex = '1000';
+    printBtn.innerHTML = '<i class="fas fa-print me-1"></i>Печать';
+    
+    printBtn.addEventListener('click', function() {
+        window.print();
+    });
+    
+    document.body.appendChild(printBtn);
+    
+    // Подсчет символов в правилах
+    const rulesContent = document.querySelector('.rules-content');
+    const charCount = rulesContent.innerText.length;
+    const wordCount = rulesContent.innerText.split(/\s+/).length;
+    
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'text-center text-muted mt-3';
+    statsDiv.innerHTML = `
+        <small>
+            <i class="fas fa-file-alt me-1"></i>Объем документа: 
+            ${wordCount} слов, ${charCount} символов
+        </small>
+    `;
+    
+    document.querySelector('.rules-content').appendChild(statsDiv);
+});
+</script>
+{% endblock %}

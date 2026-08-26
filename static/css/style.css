@@ -1,0 +1,527 @@
+/* Основные стили */
+:root {
+    --gold: #D4AF37;
+    --dark-gold: #B8860B;
+    --light-gold: #FFD700;
+    --dark-bg: #0a0a0a;
+    --darker-bg: #050505;
+    --light-bg: #1a1a2e;
+    --text-light: #f0e6d2;
+    --text-dark: #333;
+    --success: #28a745;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --info: #17a2b8;
+}
+
+body {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--light-bg) 100%);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background-attachment: fixed;
+}
+
+/* Luxury стили */
+.luxury-card {
+    background: rgba(26, 26, 46, 0.9);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.luxury-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+    transform: translateY(-5px);
+}
+
+.gold-text {
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.glow-text {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px var(--gold), 0 0 10px var(--gold), 0 0 15px var(--light-gold);
+    }
+    to {
+        text-shadow: 0 0 10px var(--gold), 0 0 20px var(--light-gold), 0 0 30px var(--light-gold);
+    }
+}
+
+/* Кнопки - Базовые стили */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px 28px;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    border: none;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+/* Кнопка Gold */
+.btn-gold {
+    background: linear-gradient(135deg, var(--dark-gold) 0%, var(--gold) 50%, var(--light-gold) 100%);
+    background-size: 200% 200%;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.btn-gold::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: rotate(45deg);
+    animation: buttonShine 3s infinite;
+}
+
+.btn-gold:hover {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--light-gold) 50%, #FFFF99 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 0.6s ease;
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-gold:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-gold:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Кнопка Outline Gold */
+.btn-outline-gold {
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.05);
+    font-weight: 600;
+    position: relative;
+}
+
+.btn-outline-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gold);
+    z-index: -1;
+    transition: left 0.4s ease;
+}
+
+.btn-outline-gold:hover {
+    background: var(--gold);
+    color: #000;
+    border-color: var(--light-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+}
+
+.btn-outline-gold:hover::before {
+    left: 0;
+}
+
+.btn-outline-gold:active {
+    transform: translateY(-1px);
+}
+
+/* Кнопка успеха */
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(40, 167, 69, 0.4);
+}
+
+/* Кнопка опасность */
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(220, 53, 69, 0.4);
+}
+
+.btn-danger:active {
+    transform: translateY(-1px);
+}
+
+/* Кнопка информация */
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    box-shadow: 0 8px 20px rgba(23, 162, 184, 0.3);
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #138496, #117a8b);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(23, 162, 184, 0.4);
+}
+
+/* Кнопка предупреждение */
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #000;
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #e0a800, #d39e00);
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(255, 193, 7, 0.4);
+}
+
+/* Кнопка Light */
+.btn-light {
+    background: rgba(240, 230, 210, 0.15);
+    color: var(--text-light);
+    border: 2px solid rgba(240, 230, 210, 0.3);
+}
+
+.btn-light:hover {
+    background: rgba(240, 230, 210, 0.25);
+    border-color: var(--text-light);
+    color: var(--text-light);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(240, 230, 210, 0.15);
+}
+
+/* Размеры кнопок */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+.btn-lg {
+    padding: 16px 40px;
+    font-size: 1.1rem;
+}
+
+/* Анимации кнопок */
+@keyframes buttonShine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Навигация */
+.navbar-luxury {
+    background: linear-gradient(90deg, var(--dark-bg) 0%, var(--light-bg) 100%);
+    border-bottom: 3px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.nav-link-luxury {
+    color: var(--text-light) !important;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.nav-link-luxury:hover {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--gold) !important;
+}
+
+/* Матчи */
+.match-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 5px solid var(--gold);
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.match-card:hover {
+    background: rgba(212, 175, 55, 0.1);
+    transform: translateX(5px);
+}
+
+.match-card.live {
+    border-left-color: var(--danger);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.coefficient-badge {
+    background: linear-gradient(45deg, var(--dark-gold), var(--gold));
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1em;
+    min-width: 80px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.coefficient-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--gold);
+}
+
+/* Баланс */
+.balance-display {
+    background: linear-gradient(45deg, rgba(212, 175, 55, 0.2), rgba(255, 215, 0, 0.1));
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Формы */
+.luxury-form input,
+.luxury-form select,
+.luxury-form textarea {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--text-light);
+    border-radius: 8px;
+}
+
+.luxury-form input:focus,
+.luxury-form select:focus,
+.luxury-form textarea:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+    color: var(--text-light);
+}
+
+/* Ставки */
+.bet-card {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(40, 40, 60, 0.9));
+    border: 2px solid;
+    border-image: linear-gradient(45deg, var(--gold), var(--light-gold)) 1;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+}
+
+.bet-won {
+    border-image: linear-gradient(45deg, var(--success), #20c997) 1;
+}
+
+.bet-lost {
+    border-image: linear-gradient(45deg, var(--danger), #e83e8c) 1;
+}
+
+.bet-pending {
+    border-image: linear-gradient(45deg, var(--warning), #ffc107) 1;
+}
+
+/* Анимации */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Скроллбар */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--light-gold);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2em;
+    }
+    
+    .match-card {
+        margin: 5px 0;
+        padding: 10px;
+    }
+    
+    .coefficient-badge {
+        min-width: 60px;
+        font-size: 1em;
+    }
+}
+
+/* Уведомления */
+.alert-luxury {
+    background: rgba(26, 26, 46, 0.9);
+    border: 2px solid var(--gold);
+    color: var(--text-light);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+/* Загрузка */
+.loading-spinner {
+    border: 3px solid rgba(212, 175, 55, 0.3);
+    border-top: 3px solid var(--gold);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Таймер */
+.timer {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: var(--danger);
+    background: rgba(220, 53, 69, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Курсор для интерактивных элементов */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Переходы для элементов */
+.transition-all {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.payment-method {
+    cursor: pointer;
+}
+
+.payment-method.active {
+    border-color: var(--gold) !important;
+    background: rgba(212, 175, 55, 0.15) !important;
+    transform: translateY(-3px);
+}
+
+.bet-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    padding: 15px;
+    position: relative;
+}
+
+.bet-option:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.bet-option.selected {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--gold);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+/* Form controls улучшение */
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    color: var(--text-light);
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    color: var(--text-light);
+}
+
+.form-control::placeholder {
+    color: rgba(240, 230, 210, 0.5);
+}
+
+.form-label {
+    font-weight: 600;
+}

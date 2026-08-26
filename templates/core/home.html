@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}VIP BET - Премиальная букмекерская контора{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <!-- Приветственный баннер -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="luxury-card p-5 text-center">
+                <h1 class="display-4 gold-text glow-text mb-3">
+                    <i class="fas fa-crown me-2"></i>VIP BET
+                </h1>
+                <p class="lead mb-5 fs-3">Премиальная букмекерская контора с лучшими коэффициентами</p>
+                
+                {% if not user.is_authenticated %}
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'users:register' %}" class="btn btn-gold btn-lg px-5 py-3 fs-5 btn-ripple">
+                        <i class="fas fa-gem me-2"></i>Начать играть
+                    </a>
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-gold btn-lg px-5 py-3 fs-5">
+                        <i class="fas fa-sign-in-alt me-2"></i>Войти в аккаунт
+                    </a>
+                </div>
+                {% else %}
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="balance-display d-inline-block px-5 py-4 mb-4">
+                            <span class="fs-3">Ваш баланс: </span>
+                            <span class="gold-text fw-bold fs-2 user-balance">{{ user.balance|default:"0.00" }} ₽</span>
+                        </div>
+                        <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+                            <a href="{% url 'matches:match_list' %}" class="btn btn-gold btn-lg px-4 py-3 btn-ripple">
+                                <i class="fas fa-bolt me-2"></i>Сделать ставку
+                            </a>
+                            <a href="{% url 'payments:deposit' %}" class="btn btn-outline-gold btn-lg px-4 py-3">
+                                <i class="fas fa-plus me-2"></i>Пополнить счет
+                            </a>
+                            <a href="{% url 'users:user_bets' %}" class="btn btn-outline-gold btn-lg px-4 py-3">
+                                <i class="fas fa-history me-2"></i>История ставок
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Быстрые действия -->
+    {% if user.is_authenticated %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="luxury-card p-5">
+                <h2 class="gold-text mb-5 text-center">
+                    <i class="fas fa-rocket me-2"></i>Быстрые действия
+                </h2>
+                <div class="row g-3">
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a href="{% url 'payments:deposit' %}" class="btn btn-gold btn-block w-100 py-4 d-flex flex-column align-items-center btn-ripple quick-card">
+                            <i class="fas fa-wallet fa-3x mb-3"></i>
+                            <span class="fw-bold fs-5">Пополнить</span>
+                            <small class="mt-2">Счет</small>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a href="{% url 'matches:match_list' %}" class="btn btn-outline-gold btn-block w-100 py-4 d-flex flex-column align-items-center quick-card">
+                            <i class="fas fa-bolt fa-3x mb-3"></i>
+                            <span class="fw-bold fs-5">Ставки</span>
+                            <small class="mt-2">На матчи</small>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a href="{% url 'users:user_bets' %}" class="btn btn-outline-gold btn-block w-100 py-4 d-flex flex-column align-items-center quick-card">
+                            <i class="fas fa-history fa-3x mb-3"></i>
+                            <span class="fw-bold fs-5">История</span>
+                            <small class="mt-2">Ставок</small>
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <a href="{% url 'payments:withdraw' %}" class="btn btn-gold btn-block w-100 py-4 d-flex flex-column align-items-center btn-ripple quick-card">
+                            <i class="fas fa-money-bill-wave fa-3x mb-3"></i>
+                            <span class="fw-bold fs-5">Вывести</span>
+                            <small class="mt-2">Средства</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Информационные карточки -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="luxury-card h-100 p-5 text-center transition-all">
+                <i class="fas fa-shield-alt fa-3x gold-text mb-4"></i>
+                <h4 class="gold-text mb-3 fw-bold">Безопасность</h4>
+                <p class="text-light lh-lg">SSL шифрование, защита данных, лицензированная деятельность и полная конфиденциальность</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="luxury-card h-100 p-5 text-center transition-all">
+                <i class="fas fa-gem fa-3x gold-text mb-4"></i>
+                <h4 class="gold-text mb-3 fw-bold">VIP Статус</h4>
+                <p class="text-light lh-lg">Эксклюзивные предложения, повышенные коэффициенты и приоритетная поддержка</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="luxury-card h-100 p-5 text-center transition-all">
+                <i class="fas fa-headset fa-3x gold-text mb-4"></i>
+                <h4 class="gold-text mb-3 fw-bold">Поддержка 24/7</h4>
+                <p class="text-light lh-lg">Круглосуточная техническая поддержка по всем вопросам на русском языке</p>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

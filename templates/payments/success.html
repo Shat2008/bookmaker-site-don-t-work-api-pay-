@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Оплата успешна - VIP BET{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="luxury-card p-5 text-center">
+                <!-- Иконка успеха -->
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-5x text-success"></i>
+                </div>
+                
+                <!-- Заголовок -->
+                <h1 class="gold-text mb-3">Оплата прошла успешно!</h1>
+                <p class="text-light fs-5 mb-4">Средства будут зачислены на ваш счет в течение 5 минут</p>
+                
+                <!-- Информация -->
+                {% if payment_id %}
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-hashtag me-2"></i>
+                    <strong>ID платежа:</strong> {{ payment_id }}
+                </div>
+                {% endif %}
+                
+                <!-- Действия -->
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <a href="{% url 'payments:transactions' %}" class="btn btn-gold">
+                        <i class="fas fa-history me-2"></i>История транзакций
+                    </a>
+                    <a href="{% url 'matches:match_list' %}" class="btn btn-outline-gold">
+                        <i class="fas fa-bolt me-2"></i>Сделать ставку
+                    </a>
+                    <a href="{% url 'core:home' %}" class="btn btn-outline-gold">
+                        <i class="fas fa-home me-2"></i>На главную
+                    </a>
+                </div>
+                
+                <!-- Таймер обновления баланса -->
+                <div class="mt-5 pt-4 border-top border-secondary">
+                    <p class="text-light mb-3">
+                        <i class="fas fa-sync-alt me-2 text-warning"></i>
+                        Баланс обновится автоматически через:
+                    </p>
+                    <div class="fs-2 fw-bold text-warning" id="countdown">0:05</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let seconds = 5;
+const countdownElement = document.getElementById('countdown');
+
+function updateCountdown() {
+    countdownElement.textContent = `0:${seconds.toString().padStart(2, '0')}`;
+    
+    if (seconds === 0) {
+        // Через 5 секунд перезагружаем страницу для обновления баланса
+        location.reload();
+    } else {
+        seconds--;
+        setTimeout(updateCountdown, 1000);
+    }
+}
+
+updateCountdown();
+</script>
+{% endblock %}

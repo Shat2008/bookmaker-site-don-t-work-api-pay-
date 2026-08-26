@@ -1,0 +1,152 @@
+<header class="navbar-luxury">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <!-- Логотип -->
+            <a class="navbar-brand gold-text fw-bold fs-3" href="{% url 'core:home' %}">
+                <i class="fas fa-crown me-2"></i>VIP BET
+            </a>
+            
+            <!-- Мобильное меню -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Основное меню -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <!-- Для мобильной версии - отдельная кнопка выхода -->
+<div class="d-block d-lg-none mt-3">
+    <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Вы уверены, что хотите выйти?')">
+            <i class="fas fa-sign-out-alt me-2"></i>Выйти из аккаунта
+        </button>
+    </form>
+</div>
+                <!-- Виды спорта -->
+                <ul class="navbar-nav me-auto">
+                    {% for sport in sports_menu %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-luxury dropdown-toggle" href="#" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-{{ sport.icon }} me-1"></i>{{ sport.name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{% url 'matches:match_list_by_sport' sport.id %}">
+                                Все матчи
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:live_matches' %}">
+                                Live матчи <span class="badge bg-danger">LIVE</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'matches:match_list' %}">
+                                <i class="fas fa-star text-warning me-1"></i>Все матчи
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endfor %}
+                    
+                    <!-- Live раздел -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-luxury text-danger fw-bold" href="{% url 'core:live_matches' %}">
+                            <i class="fas fa-broadcast-tower me-1"></i>LIVE
+                            <span class="badge bg-danger blink">ON AIR</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Правая часть -->
+                <div class="d-flex align-items-center">
+                    
+                    {% if user.is_authenticated %}
+                    <!-- Баланс пользователя -->
+                    <div class="balance-display me-3">
+                        <span class="me-2">Баланс:</span>
+                        <span class="gold-text fw-bold fs-5 user-balance">{{ user.balance|default:"0.00" }} ₽</span>
+                    </div>
+                    
+                    <!-- Быстрые действия -->
+                    <div class="btn-group-luxury me-3">
+                        <a href="{% url 'payments:deposit' %}" class="btn btn-gold btn-sm d-flex align-items-center">
+                            <i class="fas fa-plus"></i><span class="ms-1">Пополнить</span>
+                        </a>
+                        <a href="{% url 'payments:withdraw' %}" class="btn btn-outline-gold btn-sm d-flex align-items-center">
+                            <i class="fas fa-money-bill-wave"></i><span class="ms-1">Вывести</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Профиль пользователя -->
+                    <!-- Профиль пользователя -->
+<div class="dropdown">
+    <button class="btn btn-outline-light dropdown-toggle" type="button" 
+            data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-user me-1"></i>{{ user.username }}
+        {% if user.is_superuser %}
+        <span class="vip-badge ms-1">VIP</span>
+        {% endif %}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+        <li><h6 class="dropdown-header gold-text">{{ user.get_full_name|default:user.username }}</h6></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="{% url 'users:profile' %}">
+            <i class="fas fa-id-card me-2"></i>Профиль
+        </a></li>
+        <li><a class="dropdown-item" href="{% url 'users:user_bets' %}">
+            <i class="fas fa-history me-2"></i>Мои ставки
+        </a></li>
+        <li><a class="dropdown-item" href="{% url 'payments:transactions' %}">
+            <i class="fas fa-exchange-alt me-2"></i>Транзакции
+        </a></li>
+        <li><hr class="dropdown-divider"></li>
+
+        <li><hr class="dropdown-divider"></li>
+        <!-- КНОПКА ВЫХОДА -->
+        <li>
+            <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item text-danger" style="border: none; background: none; width: 100%; text-align: left; padding: 0.5rem 1rem;" onclick="return confirm('Вы уверены, что хотите выйти?')">
+                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>
+                    
+                    {% else %}
+                    <!-- Кнопки для гостей -->
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-sign-in-alt me-1"></i>Войти
+                    </a>
+                    <a href="{% url 'users:register' %}" class="btn btn-gold">
+                        <i class="fas fa-user-plus me-1"></i>Регистрация
+                    </a>
+                    {% endif %}
+                    
+                    <!-- Техподдержка -->
+                    <a href="{% url 'core:support' %}" class="btn btn-link text-warning ms-3" 
+                       data-bs-toggle="tooltip" title="Техническая поддержка">
+                        <i class="fas fa-headset fa-lg"></i>
+                    </a>
+                    
+                    <!-- Купон ставок (только для авторизованных) -->
+                    {% if user.is_authenticated %}
+                    <div class="dropdown ms-2">
+                        <button class="btn btn-outline-warning position-relative" 
+                                data-bs-toggle="dropdown">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span id="betSlipCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                0
+                            </span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
+                            <div id="betSlip">
+                                <!-- Купон будет загружен через JavaScript -->
+                                <p class="text-center text-muted mb-0">Купон пуст</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

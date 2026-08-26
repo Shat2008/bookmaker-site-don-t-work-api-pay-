@@ -1,0 +1,422 @@
+/* ===== ПРЕМИУМ СТИЛИ КНОПОК И ЭЛЕМЕНТОВ ===== */
+
+/* Основные переменные */
+:root {
+    --transition-smooth: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-fast: all 0.2s ease;
+}
+
+/* ===== КНОПКИ ЗОЛОТОГО ЦВЕТА ===== */
+
+.btn-gold {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-gold::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-gold:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* ===== КНОПКИ КОНТУРА ===== */
+
+.btn-outline-gold {
+    position: relative;
+}
+
+.btn-outline-gold::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gold);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-outline-gold:hover::before {
+    opacity: 1;
+}
+
+/* ===== СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ ===== */
+
+/* Эффект слайда */
+.btn-slide {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: left 0.5s ease;
+}
+
+.btn-slide:hover::before {
+    left: 100%;
+}
+
+/* Эффект пульсации */
+.btn-pulse {
+    animation: buttonPulse 2s ease-in-out infinite;
+}
+
+@keyframes buttonPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(212, 175, 55, 0);
+    }
+}
+
+/* Эффект свечения */
+.btn-glow {
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    transition: box-shadow 0.3s ease;
+}
+
+.btn-glow:hover {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.8), 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* ===== СОСТОЯНИЯ КНОПОК ===== */
+
+/* Активная кнопка */
+.btn.active {
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Отключённая кнопка */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===== ГРУППЫ КНОПОК ===== */
+
+.btn-group-luxury {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-group-luxury .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* ===== РАЗМЕРЫ И ТИПЫ ===== */
+
+/* Маленькие кнопки */
+.btn-xs {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+}
+
+/* Иконка слева */
+.btn-icon-left i {
+    margin-right: 8px;
+}
+
+/* Иконка справа */
+.btn-icon-right i {
+    margin-left: 8px;
+    margin-right: 0;
+}
+
+/* ===== ЭЛЕМЕНТЫ ВЗАИМОДЕЙСТВИЯ ===== */
+
+/* Селектируемый элемент */
+.selectable {
+    cursor: pointer;
+    transition: var(--transition-fast);
+    user-select: none;
+}
+
+.selectable:hover {
+    transform: translateY(-2px);
+}
+
+.selectable.selected {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: var(--gold);
+}
+
+/* Карточка с эффектом наведения */
+.card-hover {
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.card-hover:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+}
+
+/* ===== ИКОНКИ В КНОПКАХ ===== */
+
+.btn i {
+    display: inline-block;
+    transition: var(--transition-fast);
+}
+
+.btn:hover i {
+    transform: scale(1.2);
+}
+
+.btn:active i {
+    transform: scale(0.95);
+}
+
+/* Вращающаяся иконка */
+.btn-spin i {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== ХЕЛПЕР КЛАССЫ ===== */
+
+/* Блочная кнопка */
+.btn-block {
+    width: 100%;
+    display: block;
+}
+
+/* Кнопка во весь размер */
+.btn-full {
+    width: 100%;
+    padding: 20px;
+}
+
+/* Центрирование */
+.btn-center {
+    margin: 0 auto;
+    display: block;
+}
+
+/* ===== LOADING СОСТОЯНИЕ ===== */
+
+.btn-loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+}
+
+/* ===== TOOLTIP ===== */
+
+.btn-tooltip {
+    position: relative;
+}
+
+.btn-tooltip[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(212, 175, 55, 0.95);
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.btn-tooltip:hover[data-tooltip]::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: 130%;
+}
+
+/* ===== БЕЙДЖИ И ЗНАЧКИ ===== */
+
+.btn-badge-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* ===== МИНИМАЛЬНЫЕ КНОПКИ ===== */
+
+.btn-minimal {
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    padding: 8px 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.btn-minimal:hover {
+    color: var(--light-gold);
+    border-bottom-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+/* ===== PAYMENT МЕТОДЫ ===== */
+
+.payment-method {
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-method::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.payment-method:hover::before {
+    opacity: 1;
+}
+
+.payment-method.active {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+}
+
+/* ===== БЫСТРЫЕ ДЕЙСТВИЯ ===== */
+
+.quick-action-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-action-btn::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    animation: slideRight 2s infinite;
+}
+
+@keyframes slideRight {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+
+@media (max-width: 768px) {
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+    
+    .btn-group-luxury {
+        gap: 8px;
+    }
+    
+    .btn-group-luxury .btn {
+        min-width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-tooltip[data-tooltip]::after {
+        font-size: 0.75rem;
+    }
+    
+    .btn-group-luxury {
+        flex-direction: column;
+    }
+    
+    .btn-group-luxury .btn {
+        width: 100%;
+    }
+}
